@@ -1,42 +1,42 @@
 [
   {
     "text": "Live",
-    "startMs": 40,
-    "endMs": 370
+    "startMs": 38,
+    "endMs": 352
   },
   {
     "text": "coaching,",
-    "startMs": 370,
-    "endMs": 970
+    "startMs": 352,
+    "endMs": 924
   },
   {
     "text": "mid-call.",
-    "startMs": 1160,
-    "endMs": 2050
+    "startMs": 1105,
+    "endMs": 1952
   },
   {
     "text": "In",
-    "startMs": 2150,
-    "endMs": 2270
+    "startMs": 2048,
+    "endMs": 2162
   },
   {
     "text": "English,",
-    "startMs": 2270,
-    "endMs": 2890
+    "startMs": 2162,
+    "endMs": 2752
   },
   {
     "text": "Hindi,",
-    "startMs": 3050,
-    "endMs": 3580
+    "startMs": 2905,
+    "endMs": 3410
   },
   {
     "text": "or",
-    "startMs": 3610,
-    "endMs": 3810
+    "startMs": 3438,
+    "endMs": 3629
   },
   {
     "text": "Hinglish.",
-    "startMs": 3810,
-    "endMs": 4420
+    "startMs": 3629,
+    "endMs": 4210
   }
 ]

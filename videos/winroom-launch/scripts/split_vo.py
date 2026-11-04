@@ -167,12 +167,32 @@ def main() -> None:
     for v in TIMING["vo"]:
         t = timings[v["id"]]
         out = OUT_DIR / f"{v['id']}.mp3"
+        speed = float(v.get("speed", 1.0))
+        # Pitch-preserving speed change (approved by Vikas for the 5 long lines).
+        # Trim first, then change tempo, all inside one filter chain.
+        chain = f"atrim=start={t['clipStartS']:.3f}:end={t['clipEndS']:.3f},asetpts=PTS-STARTPTS"
+        if speed != 1.0:
+            chain += f",rubberband=tempo={speed}:pitchq=quality:transients=smooth"
         subprocess.run(
-            ["ffmpeg", "-v", "error", "-y", "-i", str(SOURCE), "-ss", f"{t['clipStartS']:.3f}",
-             "-to", f"{t['clipEndS']:.3f}", "-ar", "48000", "-c:a", "libmp3lame", "-q:a", "2", str(out)],
+            ["ffmpeg", "-v", "error", "-y", "-i", str(SOURCE), "-af", chain,
+             "-ar", "48000", "-c:a", "libmp3lame", "-q:a", "2", str(out)],
             check=True,
         )
-        (OUT_DIR / f"{v['id']}.words.json").write_text(json.dumps(t["words"], indent=2) + "\n")
+        words = [
+            {"text": w["text"], "startMs": round(w["startMs"] / speed), "endMs": round(w["endMs"] / speed)}
+            for w in t["words"]
+        ]
+        (OUT_DIR / f"{v['id']}.words.json").write_text(json.dumps(words, indent=2) + "\n")
+        if v["phoneFilter"]:
+            # Phone line: band-limit 300-3400 Hz, compress, light tanh saturation, mono.
+            subprocess.run(
+                ["ffmpeg", "-v", "error", "-y", "-i", str(out), "-af",
+                 "highpass=f=300,lowpass=f=3400,acompressor=threshold=-18dB:ratio=3,"
+                 "volume=3dB,asoftclip=type=tanh,volume=-3dB",
+                 "-ac", "1", "-ar", "48000", "-c:a", "libmp3lame", "-q:a", "2",
+                 str(OUT_DIR / f"{v['id']}.call.mp3")],
+                check=True,
+            )
         clip_audio = audio[int(t["clipStartS"] * 16000): int(t["clipEndS"] * 16000)]
         heard = recognise(clip_audio)
         expected = [norm(w["text"]) for w in t["words"]]
@@ -184,6 +204,7 @@ def main() -> None:
             "text": " ".join(w["text"] for w in t["words"]),
             "sourceIn": round(t["clipStartS"], 3),
             "sourceOut": round(t["clipEndS"], 3),
+            "speed": speed,
             "lengthS": round(length, 3),
             "lengthFrames": round(length * FPS, 1),
             "maxS": round(max_len, 3),
@@ -195,9 +216,9 @@ def main() -> None:
         })
 
     (OUT_DIR / "split_report.json").write_text(json.dumps(rows, indent=2) + "\n")
-    print(f"{'ID':6} {'len s':>6} {'max s':>6} {'over':>6}  result  silence  heard  text")
+    print(f"{'ID':6} {'speed':>5} {'len s':>6} {'max s':>6} {'over':>6}  result  silence  heard  text")
     for r in rows:
-        print(f"{r['id']:6} {r['lengthS']:6.2f} {r['maxS']:6.2f} {r['overS']:6.2f}  "
+        print(f"{r['id']:6} {r['speed']:5.2f} {r['lengthS']:6.2f} {r['maxS']:6.2f} {r['overS']:6.2f}  "
               f"{'PASS' if r['pass'] else 'FAIL':6}  {'yes' if r['silenceCut'] else 'no ':7}  "
               f"{r['recognitionOverlap']:4.0%}   {r['text']}")
     failed = [r["id"] for r in rows if not r["pass"]]

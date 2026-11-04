@@ -1,62 +1,62 @@
 [
   {
     "text": "Winroom",
-    "startMs": 40,
-    "endMs": 540
+    "startMs": 39,
+    "endMs": 529
   },
   {
     "text": "logs",
-    "startMs": 540,
-    "endMs": 860
+    "startMs": 529,
+    "endMs": 843
   },
   {
     "text": "the",
-    "startMs": 860,
-    "endMs": 2010
+    "startMs": 843,
+    "endMs": 1971
   },
   {
     "text": "call",
-    "startMs": 2080,
-    "endMs": 2170
+    "startMs": 2039,
+    "endMs": 2127
   },
   {
     "text": "and",
-    "startMs": 2170,
-    "endMs": 2270
+    "startMs": 2127,
+    "endMs": 2225
   },
   {
     "text": "sets",
-    "startMs": 2270,
-    "endMs": 2580
+    "startMs": 2225,
+    "endMs": 2529
   },
   {
     "text": "the",
-    "startMs": 2580,
-    "endMs": 2680
+    "startMs": 2529,
+    "endMs": 2627
   },
   {
     "text": "next",
-    "startMs": 2680,
-    "endMs": 2930
+    "startMs": 2627,
+    "endMs": 2873
   },
   {
     "text": "step.",
-    "startMs": 2930,
-    "endMs": 3480
+    "startMs": 2873,
+    "endMs": 3412
   },
   {
     "text": "Nobody",
-    "startMs": 3920,
-    "endMs": 4380
+    "startMs": 3843,
+    "endMs": 4294
   },
   {
     "text": "types",
-    "startMs": 4380,
-    "endMs": 4730
+    "startMs": 4294,
+    "endMs": 4637
   },
   {
     "text": "notes.",
-    "startMs": 4730,
-    "endMs": 5230
+    "startMs": 4637,
+    "endMs": 5127
   }
 ]

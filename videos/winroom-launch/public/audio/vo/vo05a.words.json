@@ -1,42 +1,42 @@
 [
   {
     "text": "Feels",
-    "startMs": 40,
-    "endMs": 510
+    "startMs": 36,
+    "endMs": 459
   },
   {
     "text": "a",
-    "startMs": 510,
-    "endMs": 560
+    "startMs": 459,
+    "endMs": 505
   },
   {
     "text": "bit",
-    "startMs": 560,
-    "endMs": 1000
+    "startMs": 505,
+    "endMs": 901
   },
   {
     "text": "pricey...",
-    "startMs": 1000,
-    "endMs": 1690
+    "startMs": 901,
+    "endMs": 1523
   },
   {
     "text": "maybe",
-    "startMs": 2080,
-    "endMs": 2490
+    "startMs": 1874,
+    "endMs": 2243
   },
   {
     "text": "after",
-    "startMs": 2610,
-    "endMs": 2850
+    "startMs": 2351,
+    "endMs": 2568
   },
   {
     "text": "the",
-    "startMs": 2850,
-    "endMs": 2950
+    "startMs": 2568,
+    "endMs": 2658
   },
   {
     "text": "visit.",
-    "startMs": 2950,
-    "endMs": 3580
+    "startMs": 2658,
+    "endMs": 3225
   }
 ]

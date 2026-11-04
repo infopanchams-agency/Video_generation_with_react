@@ -1,37 +1,37 @@
 [
   {
     "text": "Five",
-    "startMs": 40,
-    "endMs": 620
+    "startMs": 38,
+    "endMs": 596
   },
   {
     "text": "tools.",
-    "startMs": 620,
-    "endMs": 1110
+    "startMs": 596,
+    "endMs": 1067
   },
   {
     "text": "Empty",
-    "startMs": 1440,
-    "endMs": 1800
+    "startMs": 1385,
+    "endMs": 1731
   },
   {
     "text": "notes.",
-    "startMs": 1800,
-    "endMs": 2430
+    "startMs": 1731,
+    "endMs": 2337
   },
   {
     "text": "Last",
-    "startMs": 2650,
-    "endMs": 3020
+    "startMs": 2548,
+    "endMs": 2904
   },
   {
     "text": "quarter's",
-    "startMs": 3020,
-    "endMs": 3460
+    "startMs": 2904,
+    "endMs": 3327
   },
   {
     "text": "playbook.",
-    "startMs": 3460,
-    "endMs": 4000
+    "startMs": 3327,
+    "endMs": 3846
   }
 ]
