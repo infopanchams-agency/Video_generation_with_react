@@ -1,0 +1,60 @@
+{
+  "version": "square v1 (1080x1080 LinkedIn cut)",
+  "fps": 30,
+  "bpm": 120,
+  "framesPerBeat": 15,
+  "framesPerBar": 60,
+  "durationInFrames": 900,
+  "notes": [
+    "60 beats (= 15 bars of 4/4) on the same 120 BPM grid. S01 is one 6-beat bar and S02 ends on a 6-beat bar.",
+    "Scenes: S01, S02 (first 2 questions), S04, S05, S06, S10. musicBars maps each bar to the film bar whose arrangement it uses.",
+    "Uses the same VO clips as the film. vo02 is cut after 'Who logs what they said?' (clipFrames), in the pause before the third question.",
+    "vo03, vo06a, vo07, vo08 and vo09 are not in the square cut. S06 starts at the call end, so the rep reply (vo06a) is left out to fit 900 frames."
+  ],
+  "scenes": [
+    {"id": "S01Hook",      "from": 0,   "to": 90,  "bars": [1, 1],  "barBeats": [6],          "musicBars": [1]},
+    {"id": "S02Questions", "from": 90,  "to": 240, "bars": [2, 3],  "barBeats": [4, 6],       "musicBars": [3, 4]},
+    {"id": "S04Reveal",    "from": 240, "to": 300, "bars": [4, 4],  "barBeats": [4],          "musicBars": [9],  "transitionIn": "fade8"},
+    {"id": "S05LiveCall",  "from": 300, "to": 540, "bars": [5, 8],  "barBeats": [4, 4, 4, 4], "musicBars": [11, 12, 13, 14]},
+    {"id": "S06PostCall",  "from": 540, "to": 720, "bars": [9, 11], "barBeats": [4, 4, 4],    "musicBars": [15, 16, 17]},
+    {"id": "S10EndCard",   "from": 720, "to": 900, "bars": [12, 14], "barBeats": [4, 4, 4],   "musicBars": [27, 28, 29], "transitionIn": "fade8"}
+  ],
+  "vo": [
+    {"id": "vo01",  "speaker": "narrator",  "scene": "S01Hook",      "start": 0,   "maxEnd": 88,  "phoneFilter": false},
+    {"id": "vo02",  "speaker": "salesLead", "scene": "S02Questions", "start": 105, "maxEnd": 235, "phoneFilter": false, "clipFrames": 128},
+    {"id": "vo04",  "speaker": "narrator",  "scene": "S04Reveal",    "start": 240, "maxEnd": 298, "phoneFilter": false},
+    {"id": "vo05a", "speaker": "customer",  "scene": "S05LiveCall",  "start": 300, "maxEnd": 400, "phoneFilter": true},
+    {"id": "vo05b", "speaker": "narrator",  "scene": "S05LiveCall",  "start": 405, "maxEnd": 538, "phoneFilter": false},
+    {"id": "vo06b", "speaker": "narrator",  "scene": "S06PostCall",  "start": 555, "maxEnd": 718, "phoneFilter": false},
+    {"id": "vo10a", "speaker": "salesLead", "scene": "S10EndCard",   "start": 735, "maxEnd": 790, "phoneFilter": false},
+    {"id": "vo10b", "speaker": "narrator",  "scene": "S10EndCard",   "start": 795, "maxEnd": 900, "phoneFilter": false}
+  ],
+  "hits": [
+    {"key": "s01Word",      "frame": 0,   "what": "S01 'Everyone is building.' readable on frame 0", "sfx": null},
+    {"key": "s01Tiles",     "frame": 45,  "what": "S01 UI tiles multiply",           "sfx": null},
+    {"key": "s02Q1",        "frame": 90,  "what": "S02 question 1 in",               "sfx": "switch"},
+    {"key": "s02Q2",        "frame": 165, "what": "S02 question 2 in",               "sfx": "switch"},
+    {"key": "s04Cut",       "frame": 240, "what": "S04 cut to Graphite (impact)",    "sfx": "whoosh", "alignPeak": true},
+    {"key": "s04Wordmark",  "frame": 240, "what": "S04 'Winroom' wordmark builds",   "sfx": null},
+    {"key": "s04ByAerobee", "frame": 270, "what": "S04 'by Aerobee' in",             "sfx": null},
+    {"key": "s05Dial",      "frame": 300, "what": "S05 opens on the live call",      "sfx": null},
+    {"key": "s05Connect",   "frame": 300, "what": "S05 customer line in transcript", "sfx": null},
+    {"key": "s05Card",      "frame": 420, "what": "S05 coaching card slides in",     "sfx": "switch"},
+    {"key": "s06RepReply",  "frame": 540, "what": "S06 (no rep reply in square)",    "sfx": null},
+    {"key": "s06CallEnds",  "frame": 540, "what": "S06 call ends, outcome chip",     "sfx": "ding"},
+    {"key": "s06Crm1",      "frame": 570, "what": "S06 CRM field 1 ticks",           "sfx": "mouse-click"},
+    {"key": "s06Crm2",      "frame": 600, "what": "S06 CRM field 2 ticks",           "sfx": "mouse-click"},
+    {"key": "s06Task",      "frame": 645, "what": "S06 follow-up task checks in",    "sfx": "ding"},
+    {"key": "s10Cut",       "frame": 720, "what": "S10 cut (impact)",                "sfx": "whoosh", "alignPeak": true},
+    {"key": "s10Built",     "frame": 735, "what": "S10 'Built for sales people.'",   "sfx": null},
+    {"key": "s10By",        "frame": 795, "what": "S10 'By sales people.'",          "sfx": null},
+    {"key": "s10Cta",       "frame": 840, "what": "S10 wordmark + CTA",              "sfx": null}
+  ],
+  "sfxFiles": {
+    "whoosh": "audio/sfx/whoosh.wav",
+    "switch": "audio/sfx/switch.wav",
+    "mouse-click": "audio/sfx/mouse-click.wav",
+    "ding": "audio/sfx/ding.wav",
+    "page-turn": "audio/sfx/page-turn.wav"
+  }
+}

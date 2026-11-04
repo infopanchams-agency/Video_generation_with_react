@@ -1,0 +1,42 @@
+{
+  "whoosh": {
+    "file": "audio/sfx/whoosh.wav",
+    "sampleRate": 44100,
+    "peakSample": 3421,
+    "peakSeconds": 0.0776,
+    "peakOffsetFrames": 2,
+    "durationFrames": 5
+  },
+  "switch": {
+    "file": "audio/sfx/switch.wav",
+    "sampleRate": 44100,
+    "peakSample": 5354,
+    "peakSeconds": 0.1214,
+    "peakOffsetFrames": 4,
+    "durationFrames": 10
+  },
+  "mouse-click": {
+    "file": "audio/sfx/mouse-click.wav",
+    "sampleRate": 44100,
+    "peakSample": 9564,
+    "peakSeconds": 0.2169,
+    "peakOffsetFrames": 7,
+    "durationFrames": 12
+  },
+  "ding": {
+    "file": "audio/sfx/ding.wav",
+    "sampleRate": 44100,
+    "peakSample": 6612,
+    "peakSeconds": 0.1499,
+    "peakOffsetFrames": 4,
+    "durationFrames": 42
+  },
+  "page-turn": {
+    "file": "audio/sfx/page-turn.wav",
+    "sampleRate": 44100,
+    "peakSample": 7419,
+    "peakSeconds": 0.1682,
+    "peakOffsetFrames": 5,
+    "durationFrames": 12
+  }
+}
