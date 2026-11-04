@@ -1,0 +1,42 @@
+[
+  {
+    "text": "I'll",
+    "startMs": 42,
+    "endMs": 282
+  },
+  {
+    "text": "email",
+    "startMs": 282,
+    "endMs": 582
+  },
+  {
+    "text": "you",
+    "startMs": 582,
+    "endMs": 732
+  },
+  {
+    "text": "the",
+    "startMs": 732,
+    "endMs": 832
+  },
+  {
+    "text": "details",
+    "startMs": 832,
+    "endMs": 1362
+  },
+  {
+    "text": "before",
+    "startMs": 1362,
+    "endMs": 1672
+  },
+  {
+    "text": "the",
+    "startMs": 1672,
+    "endMs": 1792
+  },
+  {
+    "text": "visit.",
+    "startMs": 1792,
+    "endMs": 2292
+  }
+]

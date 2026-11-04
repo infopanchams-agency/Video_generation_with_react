@@ -1,0 +1,42 @@
+[
+  {
+    "text": "Feels",
+    "startMs": 40,
+    "endMs": 510
+  },
+  {
+    "text": "a",
+    "startMs": 510,
+    "endMs": 560
+  },
+  {
+    "text": "bit",
+    "startMs": 560,
+    "endMs": 1000
+  },
+  {
+    "text": "pricey...",
+    "startMs": 1000,
+    "endMs": 1690
+  },
+  {
+    "text": "maybe",
+    "startMs": 2080,
+    "endMs": 2490
+  },
+  {
+    "text": "after",
+    "startMs": 2610,
+    "endMs": 2850
+  },
+  {
+    "text": "the",
+    "startMs": 2850,
+    "endMs": 2950
+  },
+  {
+    "text": "visit.",
+    "startMs": 2950,
+    "endMs": 3580
+  }
+]

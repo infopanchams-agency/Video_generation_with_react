@@ -1,0 +1,22 @@
+[
+  {
+    "text": "Built",
+    "startMs": 42,
+    "endMs": 382
+  },
+  {
+    "text": "for",
+    "startMs": 382,
+    "endMs": 802
+  },
+  {
+    "text": "sales",
+    "startMs": 802,
+    "endMs": 1182
+  },
+  {
+    "text": "people.",
+    "startMs": 1182,
+    "endMs": 1572
+  }
+]

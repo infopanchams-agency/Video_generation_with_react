@@ -1,0 +1,42 @@
+[
+  {
+    "text": "Live",
+    "startMs": 40,
+    "endMs": 370
+  },
+  {
+    "text": "coaching,",
+    "startMs": 370,
+    "endMs": 970
+  },
+  {
+    "text": "mid-call.",
+    "startMs": 1160,
+    "endMs": 2050
+  },
+  {
+    "text": "In",
+    "startMs": 2150,
+    "endMs": 2270
+  },
+  {
+    "text": "English,",
+    "startMs": 2270,
+    "endMs": 2890
+  },
+  {
+    "text": "Hindi,",
+    "startMs": 3050,
+    "endMs": 3580
+  },
+  {
+    "text": "or",
+    "startMs": 3610,
+    "endMs": 3810
+  },
+  {
+    "text": "Hinglish.",
+    "startMs": 3810,
+    "endMs": 4420
+  }
+]

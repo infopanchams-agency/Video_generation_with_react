@@ -1,0 +1,32 @@
+[
+  {
+    "text": "Every",
+    "startMs": 106,
+    "endMs": 366
+  },
+  {
+    "text": "call",
+    "startMs": 366,
+    "endMs": 786
+  },
+  {
+    "text": "coaches",
+    "startMs": 786,
+    "endMs": 1326
+  },
+  {
+    "text": "the",
+    "startMs": 1326,
+    "endMs": 1406
+  },
+  {
+    "text": "next",
+    "startMs": 1406,
+    "endMs": 1756
+  },
+  {
+    "text": "one.",
+    "startMs": 1756,
+    "endMs": 2096
+  }
+]

@@ -1,0 +1,57 @@
+[
+  {
+    "text": "Voice.",
+    "startMs": 112,
+    "endMs": 752
+  },
+  {
+    "text": "WhatsApp.",
+    "startMs": 962,
+    "endMs": 1692
+  },
+  {
+    "text": "Email.",
+    "startMs": 1782,
+    "endMs": 2352
+  },
+  {
+    "text": "LinkedIn.",
+    "startMs": 2512,
+    "endMs": 3192
+  },
+  {
+    "text": "One",
+    "startMs": 3542,
+    "endMs": 3832
+  },
+  {
+    "text": "place.",
+    "startMs": 3832,
+    "endMs": 4412
+  },
+  {
+    "text": "Coached",
+    "startMs": 4662,
+    "endMs": 5132
+  },
+  {
+    "text": "by",
+    "startMs": 5132,
+    "endMs": 5272
+  },
+  {
+    "text": "your",
+    "startMs": 5272,
+    "endMs": 5462
+  },
+  {
+    "text": "own",
+    "startMs": 5462,
+    "endMs": 5782
+  },
+  {
+    "text": "playbook.",
+    "startMs": 5782,
+    "endMs": 6372
+  }
+]

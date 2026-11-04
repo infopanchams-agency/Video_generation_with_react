@@ -1,0 +1,62 @@
+[
+  {
+    "text": "Winroom",
+    "startMs": 40,
+    "endMs": 540
+  },
+  {
+    "text": "logs",
+    "startMs": 540,
+    "endMs": 860
+  },
+  {
+    "text": "the",
+    "startMs": 860,
+    "endMs": 2010
+  },
+  {
+    "text": "call",
+    "startMs": 2080,
+    "endMs": 2170
+  },
+  {
+    "text": "and",
+    "startMs": 2170,
+    "endMs": 2270
+  },
+  {
+    "text": "sets",
+    "startMs": 2270,
+    "endMs": 2580
+  },
+  {
+    "text": "the",
+    "startMs": 2580,
+    "endMs": 2680
+  },
+  {
+    "text": "next",
+    "startMs": 2680,
+    "endMs": 2930
+  },
+  {
+    "text": "step.",
+    "startMs": 2930,
+    "endMs": 3480
+  },
+  {
+    "text": "Nobody",
+    "startMs": 3920,
+    "endMs": 4380
+  },
+  {
+    "text": "types",
+    "startMs": 4380,
+    "endMs": 4730
+  },
+  {
+    "text": "notes.",
+    "startMs": 4730,
+    "endMs": 5230
+  }
+]

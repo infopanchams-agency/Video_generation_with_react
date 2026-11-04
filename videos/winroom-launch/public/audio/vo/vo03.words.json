@@ -1,0 +1,37 @@
+[
+  {
+    "text": "Five",
+    "startMs": 40,
+    "endMs": 620
+  },
+  {
+    "text": "tools.",
+    "startMs": 620,
+    "endMs": 1110
+  },
+  {
+    "text": "Empty",
+    "startMs": 1440,
+    "endMs": 1800
+  },
+  {
+    "text": "notes.",
+    "startMs": 1800,
+    "endMs": 2430
+  },
+  {
+    "text": "Last",
+    "startMs": 2650,
+    "endMs": 3020
+  },
+  {
+    "text": "quarter's",
+    "startMs": 3020,
+    "endMs": 3460
+  },
+  {
+    "text": "playbook.",
+    "startMs": 3460,
+    "endMs": 4000
+  }
+]

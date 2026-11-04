@@ -1,0 +1,32 @@
+[
+  {
+    "text": "By",
+    "startMs": 40,
+    "endMs": 380
+  },
+  {
+    "text": "sales",
+    "startMs": 380,
+    "endMs": 790
+  },
+  {
+    "text": "people.",
+    "startMs": 790,
+    "endMs": 1370
+  },
+  {
+    "text": "Winroom,",
+    "startMs": 1630,
+    "endMs": 2200
+  },
+  {
+    "text": "by",
+    "startMs": 2200,
+    "endMs": 2710
+  },
+  {
+    "text": "Aerobee.",
+    "startMs": 2710,
+    "endMs": 3380
+  }
+]
