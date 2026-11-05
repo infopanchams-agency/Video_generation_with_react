@@ -12,7 +12,8 @@ import re
 import subprocess
 import sys
 
-TARGET = "I=-14:TP=-1:LRA=11"
+# TP is set 0.5 dB under the -1 dBTP ceiling: AAC encoding adds a little overshoot.
+TARGET = "I=-14:TP=-1.5:LRA=11"
 
 
 def measure(path: str) -> dict:
@@ -30,7 +31,7 @@ subprocess.run(
     ["ffmpeg", "-hide_banner", "-v", "error", "-y", "-i", src, "-c:v", "copy", "-af",
      f"loudnorm={TARGET}:measured_I={m['input_i']}:measured_TP={m['input_tp']}:measured_LRA={m['input_lra']}"
      f":measured_thresh={m['input_thresh']}:offset={m['target_offset']}:linear=true",
-     "-ar", "48000", "-c:a", "aac", "-b:a", "320k", "-movflags", "+faststart", dst],
+     "-ar", "48000", "-c:a", "aac", "-b:a", "320k", "-shortest", "-movflags", "+faststart", dst],
     check=True,
 )
 f = measure(dst)

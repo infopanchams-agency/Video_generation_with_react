@@ -30,6 +30,7 @@ FPS = TIMING["fps"]
 PAD_S = 0.040
 SILENCE_DB = -40
 SILENCE_MIN_S = 0.15
+PHONE_RMS_DB = -22.0  # loudness both call lines are matched to before the phone filter
 
 # Words missing from the CMU dictionary, with ARPAbet pronunciations taken
 # from the VO script's pronunciation notes.
@@ -184,10 +185,17 @@ def main() -> None:
         ]
         (OUT_DIR / f"{v['id']}.words.json").write_text(json.dumps(words, indent=2) + "\n")
         if v["phoneFilter"]:
+            # The customer's line was recorded about 10 dB softer than the rest.
+            # Level-match each phone line to PHONE_RMS_DB before the filter (a mix
+            # gain only; the voice itself is unchanged).
+            pcm = subprocess.run(["ffmpeg", "-v", "error", "-i", str(out), "-ac", "1", "-f", "s16le", "-"],
+                                 check=True, capture_output=True).stdout
+            x = np.frombuffer(pcm, dtype=np.int16).astype(np.float64) / 32768
+            gain_db = PHONE_RMS_DB - 20 * np.log10(np.sqrt(np.mean(x ** 2)) + 1e-12)
             # Phone line: band-limit 300-3400 Hz, compress, light tanh saturation, mono.
             subprocess.run(
                 ["ffmpeg", "-v", "error", "-y", "-i", str(out), "-af",
-                 "highpass=f=300,lowpass=f=3400,acompressor=threshold=-18dB:ratio=3,"
+                 f"volume={gain_db:.2f}dB,highpass=f=300,lowpass=f=3400,acompressor=threshold=-18dB:ratio=3,"
                  "volume=3dB,asoftclip=type=tanh,volume=-3dB",
                  "-ac", "1", "-ar", "48000", "-c:a", "libmp3lame", "-q:a", "2",
                  str(OUT_DIR / f"{v['id']}.call.mp3")],
