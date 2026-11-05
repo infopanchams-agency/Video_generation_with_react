@@ -1,3 +1,4 @@
+import type {CamKey} from '../ui/fx';
 import {interpolate} from 'remotion';
 import {COPY} from '../script';
 import {clamp, colors, fonts, WORD_IN_FRAMES} from '../theme';
@@ -22,7 +23,7 @@ export const S01Hook: React.FC = () => {
 	const grid = square
 		? {x: 80, y: 80, cols: 6, rows: 3, w: 141, h: 88, px: 156, py: 102}
 		: {x: 140, y: 96, cols: 13, rows: 4, w: 122, h: 96, px: 138, py: 112};
-	const headline = square ? {x: 80, top: 450, size: 150} : {x: 140, top: 560, size: 210};
+	const headline = square ? {x: 80, top: 450, size: 150} : {x: 140, top: 520, size: 210};
 
 	// "Everyone" lands on the hit (frame 0). The rest follow the voice (rule S3).
 	// The square cut must read with sound off on frame 0, so all words show at once.
@@ -34,16 +35,7 @@ export const S01Hook: React.FC = () => {
 
 	const W = square ? 1080 : 1920;
 	const H = square ? 1080 : 1080;
-	const cam = square
-		? [
-				{at: from, fx: 540, fy: 540, s: 1},
-				{at: tilesAt, fx: 540, fy: 600, s: 1.06, dur: 40},
-			]
-		: [
-				{at: from, fx: 960, fy: 560, s: 1.08},
-				{at: tilesAt, fx: 900, fy: 600, s: 1.0, dur: 30},
-				{at: markAt, fx: 700, fy: 700, s: 1.12, dur: 22},
-			];
+	const cam: CamKey[] = [{at: from, box: square ? [60, 60, 960, 960] : [100, 80, 1720, 920]}];
 
 	const tiles = [];
 	for (let r = 0; r < grid.rows; r++) {
@@ -93,7 +85,7 @@ export const S01Hook: React.FC = () => {
 	return (
 		<SceneShell id="S01Hook" cam={cam}>
 			<LightPool x={W * 0.3} y={H * 0.72} r={700} color={colors.signalCyan} g={g} fps={fps} strength={0.22} />
-			<LightPool x={W * 0.75} y={H * 0.2} r={600} color="#7B5CFF" g={g} fps={fps} at={tilesAt} strength={0.25} />
+			<LightPool x={W * 0.75} y={H * 0.2} r={600} color={colors.violet} g={g} fps={fps} at={tilesAt} strength={0.25} />
 			{tiles}
 			<div
 				style={{

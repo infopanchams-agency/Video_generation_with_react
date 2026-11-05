@@ -1,3 +1,4 @@
+import type {CamKey} from '../ui/fx';
 import {interpolate} from 'remotion';
 import {COPY} from '../script';
 import {clamp, colors, fonts} from '../theme';
@@ -22,13 +23,13 @@ export const S02Questions: React.FC = () => {
 	const top = square ? 260 : 280;
 
 	// Camera follows the newest question.
-	const cam = square
-		? [{at: from, fx: 540, fy: 540, s: 0.98}, ...shown.map((k, q) => ({at: hit(k), fx: 540, fy: 480 + q * 60, s: 1.0 + q * 0.02, dur: 14}))]
-		: [{at: from, fx: 960, fy: 540, s: 0.98}, ...shown.map((k, q) => ({at: hit(k), fx: 960, fy: 470 + q * 50, s: 1.0 + q * 0.02, dur: 14}))];
+	const cam: CamKey[] = square
+		? [{at: from, box: [80, 220, 920, 640]}]
+		: [{at: from, box: [140, 240, 1640, 600]}, ...shown.map((k, q) => ({at: hit(k), box: [140, 250 + q * 110, 1640, 460] as CamKey['box'], dur: 14}))];
 
 	return (
 		<SceneShell id="S02Questions" cam={cam}>
-			<LightPool x={square ? 300 : 500} y={square ? 600 : 520} r={square ? 600 : 900} color="#7B5CFF" g={g} fps={fps} strength={0.3} />
+			<LightPool x={square ? 300 : 500} y={square ? 600 : 520} r={square ? 600 : 900} color={colors.violet} g={g} fps={fps} strength={0.3} />
 			{shown.map((key, q) => {
 				const at = hit(key);
 				const nextAt = q + 1 < shown.length ? hit(shown[q + 1]) : null;

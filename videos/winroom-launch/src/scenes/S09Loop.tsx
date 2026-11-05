@@ -1,3 +1,4 @@
+import type {CamKey} from '../ui/fx';
 import {interpolate, interpolateColors} from 'remotion';
 import {COPY} from '../script';
 import {clamp, colors, fonts} from '../theme';
@@ -25,18 +26,17 @@ export const S09Loop: React.FC = () => {
 	};
 
 	// Camera rides round the loop with the stroke, then pulls back as it closes.
-	const cam = [
-		{at: from, fx: CX, fy: CY - 120, s: 1.35},
-		...nodesAt.map((at, i) => ({at: at - 4, fx: CX + (pos(i).x - CX) * 0.45, fy: CY + (pos(i).y - CY) * 0.45, s: 1.3, dur: 10})),
-		{at: closeAt - 2, fx: CX, fy: CY, s: 1.0, dur: 20},
+	const cam: CamKey[] = [
+		{at: from, box: [CX - 520, CY - 380, 1040, 760], maxS: 1.15},
+		{at: closeAt - 2, box: [CX - 520, CY - 380, 1040, 760], maxS: 1.22, dur: 20},
 	];
 
 	return (
 		<SceneShell id="S09Loop" cam={cam}>
-			<LightPool x={CX} y={CY} r={760} color={colors.amber} g={g} fps={fps} strength={0.22 + 0.35 * closeFlash} />
+			<LightPool x={CX} y={CY} r={760} color={colors.amber} g={g} fps={fps} strength={0.14 + 0.3 * closeFlash} />
 			<LightPool x={CX} y={CY} r={420} color={colors.signalCyan} g={g} fps={fps} at={startAt} strength={0.18} />
 			<svg width={1920} height={1080} style={{position: 'absolute', overflow: 'visible'}}>
-				<circle cx={CX} cy={CY} r={R} fill="none" stroke={`${colors.amber}22`} strokeWidth={3} />
+				<circle cx={CX} cy={CY} r={R} fill="none" stroke={`${colors.amber}33`} strokeWidth={3} />
 				<circle
 					cx={CX}
 					cy={CY}
@@ -60,9 +60,9 @@ export const S09Loop: React.FC = () => {
 						<polygon
 							key={deg}
 							points="-12,-11 12,0 -12,11"
-							fill={colors.signalCyan}
+							fill={colors.cyanInk}
 							transform={`translate(${x} ${y}) rotate(${deg}) scale(${interpolate(g, [passAt, passAt + 4, passAt + 10], [0, 1.6, 1], clamp)})`}
-							style={{filter: `drop-shadow(0 0 6px ${colors.signalCyan})`}}
+							style={{filter: `drop-shadow(0 0 4px ${colors.signalCyan})`}}
 						/>
 					);
 				})}
@@ -79,7 +79,7 @@ export const S09Loop: React.FC = () => {
 								padding: '18px 42px',
 								borderRadius: 60,
 								border: `2.5px solid ${colors.amber}`,
-								backgroundColor: interpolateColors(lit, [0, 1], [colors.graphite, colors.amber]),
+								backgroundColor: interpolateColors(lit, [0, 1], [colors.surface, colors.amber]),
 								boxShadow: `0 0 ${10 + 50 * lit}px ${colors.amber}${Math.round(40 + 140 * lit)
 									.toString(16)
 									.padStart(2, '0')}`,

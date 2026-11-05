@@ -24,10 +24,10 @@ const Connector: React.FC<{
 	const ang = Math.atan2(y2 - y1, x2 - x1);
 	return (
 		<svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1} height={1}>
-			<line x1={x1} y1={y1} x2={x1 + (x2 - x1) * p} y2={y1 + (y2 - y1) * p} stroke={colors.signalCyan} strokeWidth={2.5} />
+			<line x1={x1} y1={y1} x2={x1 + (x2 - x1) * p} y2={y1 + (y2 - y1) * p} stroke={colors.cyanInk} strokeWidth={3} />
 			<polygon
 				points="0,-7 12,0 0,7"
-				fill={colors.signalCyan}
+				fill={colors.cyanInk}
 				transform={`translate(${x1 + Math.cos(ang) * (len * p - 12)} ${y1 + Math.sin(ang) * (len * p - 12)}) rotate(${(ang * 180) / Math.PI})`}
 				opacity={p > 0.05 ? 1 : 0}
 			/>
@@ -40,7 +40,7 @@ const Tick: React.FC<{readonly size: number; readonly g: number; readonly at: nu
 		<path
 			d="M4 12.5l5 5L20 6.5"
 			fill="none"
-			stroke={colors.signalCyan}
+			stroke={colors.cyanInk}
 			strokeWidth={3}
 			strokeLinecap="round"
 			strokeLinejoin="round"
@@ -59,19 +59,10 @@ export const S06PostCall: React.FC = () => {
 
 	// Camera: rep's reply -> call card -> CRM fields -> task -> whole board.
 	const cam: CamKey[] = square
-		? [
-				{at: from, fx: 540, fy: 200, s: 1.3},
-				{at: crm[0] - 6, fx: 540, fy: 480, s: 1.15, dur: 14},
-				{at: taskAt - 6, fx: 540, fy: 760, s: 1.2, dur: 14},
-				{at: taskAt + 30, fx: 540, fy: 480, s: 1.0, dur: 24},
-			]
+		? [{at: from, box: [60, 60, 960, 800]}]
 		: [
-				{at: from, fx: 760, fy: 470, s: 1.32},
-				{at: endsAt, fx: 370, fy: 450, s: 1.4, dur: 1},
-				{at: endsAt + 2, fx: 370, fy: 450, s: 1.3, dur: 10},
-				{at: crm[0] - 6, fx: 1270, fy: 400, s: 1.22, dur: 14},
-				{at: taskAt - 6, fx: 1270, fy: 740, s: 1.25, dur: 14},
-				{at: taskAt + 30, fx: 960, fy: 560, s: 1.0, dur: 26},
+				{at: from, box: [72, 230, 1776, 620]},
+				{at: endsAt, box: [140, 220, 1640, 650], dur: 1},
 			];
 
 	// Before the call ends the rep's reply types into the live transcript.

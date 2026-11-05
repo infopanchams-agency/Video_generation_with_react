@@ -68,7 +68,7 @@ export const LiveCall: React.FC<{
 				card: {left: 36, top: 590, width: 928, labelSize: 26, hintSize: 40},
 			}
 		: {
-				panel: {left: 72, top: 97, width: 1776, height: 1000},
+				panel: {left: 72, top: 230, width: 1776, height: 620},
 				bar: 66,
 				name: 54,
 				body: 28,
@@ -86,6 +86,8 @@ export const LiveCall: React.FC<{
 	const press = interpolate(g, [dialAt, dialAt + 3, dialAt + 8], [1, 0.9, 1], clamp);
 	// Ringing pulse on the call button while the call is live.
 	const ring = connected ? ((g - connectAt) % fps) / fps : 0;
+	// Spotlight: when the coaching card lands, everything else steps back for a beat and a half.
+	const rest = interpolate(g, [cardAt, cardAt + 8, cardAt + 50, cardAt + 62], [1, 0.32, 0.32, 1], clamp);
 
 	return (
 		<div style={{position: 'absolute', ...L.panel, backgroundColor: colors.surface, border: `1.5px solid ${colors.border}`, borderRadius: 20, overflow: 'hidden'}}>
@@ -110,7 +112,7 @@ export const LiveCall: React.FC<{
 			</div>
 
 			{/* lead */}
-			<div style={{position: 'absolute', ...L.lead}}>
+			<div style={{position: 'absolute', ...L.lead, opacity: rest}}>
 				<div style={{fontFamily: fonts.ui, fontWeight: 600, fontSize: L.name, color: colors.textPrimary}}>{COPY.lead.name}</div>
 				<Chip size={L.body * 0.9} style={{marginTop: 22}}>
 					{COPY.lead.status}
@@ -130,6 +132,7 @@ export const LiveCall: React.FC<{
 					justifyContent: 'center',
 					gap: 16,
 					scale: press,
+					opacity: rest,
 					boxShadow: connected
 						? `0 0 0 ${14 * ring}px ${colors.amber}${Math.round((1 - ring) * 90)
 								.toString(16)
@@ -148,12 +151,13 @@ export const LiveCall: React.FC<{
 				style={{
 					position: 'absolute',
 					...L.transcript,
-					height: square ? 270 : 900,
+					height: square ? 270 : 620,
 					borderLeft: square ? 'none' : `1.5px solid ${colors.border}`,
 					borderRight: square ? 'none' : `1.5px solid ${colors.border}`,
 					borderTop: square ? `1.5px solid ${colors.border}` : 'none',
 					padding: square ? '22px 0 0 0' : '0 40px',
 					top: square ? L.transcript.top - 28 : L.transcript.top - 106,
+					opacity: repWords ? 1 : rest,
 				}}
 			>
 				<div style={{display: 'flex', justifyContent: 'space-between', marginTop: square ? 0 : 46}}>
@@ -192,7 +196,7 @@ export const LiveCall: React.FC<{
 							text={COPY.s06.repReply}
 							words={repWords}
 							g={g}
-							keyIndex={2}
+							keyIndex={1}
 							keyColor={colors.amber}
 							style={{
 								position: 'absolute',

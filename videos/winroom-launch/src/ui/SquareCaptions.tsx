@@ -35,8 +35,9 @@ export const SquareCaptions: React.FC = () => {
 					textWrap: 'balance',
 					padding: '14px 26px',
 					borderRadius: 12,
-					backgroundColor: colors.surfaceSunken,
-					color: colors.textPrimary,
+					backgroundColor: colors.ink,
+					color: colors.onInk,
+					boxShadow: `0 20px 40px -16px ${colors.shadow}`,
 				}}
 			>
 				{page.tokens.map((tok, i) => (

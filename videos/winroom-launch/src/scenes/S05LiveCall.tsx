@@ -1,3 +1,4 @@
+import type {CamKey} from '../ui/fx';
 import {colors} from '../theme';
 import {useScene} from '../timing';
 import {float, LightPool, SceneShell} from '../ui/fx';
@@ -11,20 +12,8 @@ export const S05LiveCall: React.FC = () => {
 	const cardAt = hit('s05Card');
 
 	// Camera: lead card -> dial -> customer's words -> coaching card -> whole screen.
-	const cam = square
-		? [
-				{at: from, fx: 540, fy: 300, s: 1.18},
-				{at: connectAt + 6, fx: 540, fy: 440, s: 1.14, dur: 18},
-				{at: cardAt, fx: 540, fy: 640, s: 1.06, dur: 14},
-				{at: cardAt + 45, fx: 540, fy: 480, s: 1.0, dur: 24},
-			]
-		: [
-				{at: from, fx: 330, fy: 430, s: 1.32},
-				{at: dialAt, fx: 330, fy: 470, s: 1.42, dur: 8},
-				{at: connectAt + 4, fx: 880, fy: 430, s: 1.3, dur: 18},
-				{at: cardAt, fx: 1560, fy: 340, s: 1.38, dur: 14},
-				{at: cardAt + 45, fx: 960, fy: 560, s: 1.02, dur: 26},
-			];
+	// Whole panel stays in frame; the spotlight on the coaching card does the focusing.
+	const cam: CamKey[] = [{at: from, box: square ? [40, 40, 1000, 860] : [72, 230, 1776, 620]}];
 
 	return (
 		<SceneShell id="S05LiveCall" cam={cam}>

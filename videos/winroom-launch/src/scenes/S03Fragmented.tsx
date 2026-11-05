@@ -1,4 +1,5 @@
 import type React from 'react';
+import type {CamKey} from '../ui/fx';
 import {interpolate} from 'remotion';
 import {COPY} from '../script';
 import {clamp, colors, entryEase, fonts} from '../theme';
@@ -75,15 +76,15 @@ export const S03Fragmented: React.FC = () => {
 		{label: COPY.s03.windows[3], from: [960, 560], to: [1460, 832], w: 440, h: 260, drift: [26, 18], body: <Chat />},
 	];
 
-	const cam = [
-		{at: from, fx: 760, fy: 430, s: 1.35},
-		{at: splitAt, fx: 960, fy: 540, s: 0.94, dur: 22},
-		{at: notesAt, fx: 960, fy: 540, s: 1.14, dur: 18},
+	const cam: CamKey[] = [
+		{at: from, box: [480, 260, 960, 620], maxS: 1.3},
+		{at: splitAt, box: [0, 0, 1920, 1080], dur: 22},
+		{at: notesAt, box: [300, 300, 1320, 480], maxS: 1.12, dur: 18},
 	];
 
 	return (
 		<SceneShell id="S03Fragmented" cam={cam}>
-			<LightPool x={960} y={540} r={900} color="#FF5D73" g={g} fps={fps} strength={0.2} />
+			<LightPool x={960} y={540} r={900} color={colors.coral} g={g} fps={fps} strength={0.2} />
 			<LightPool x={960} y={540} r={560} color={colors.amber} g={g} fps={fps} at={notesAt} strength={0.22} />
 			{wins.map((w, wi) => {
 				// Split apart on the hit, then keep drifting until the cut.
@@ -131,14 +132,14 @@ export const S03Fragmented: React.FC = () => {
 					borderRadius: 14,
 					padding: '52px 56px',
 					...pop(g, notesAt, fps),
-					...glow(g, notesAt, '#FF5D73'),
+					...glow(g, notesAt, colors.coral),
 				}}
 			>
 				<Mono size={22}>{COPY.s03.notesLabel}</Mono>
 				<div style={{display: 'flex', alignItems: 'center', marginTop: 34, fontFamily: fonts.mono, fontSize: 76, color: colors.textPrimary}}>
 					{COPY.s03.notesKey}
 					<span style={{marginLeft: 36}}>
-						<Marker g={g} at={notesAt + 14} color="#FF5D73" baseText={colors.textMuted}>
+						<Marker g={g} at={notesAt + 14} color={colors.coral} baseText={colors.textMuted}>
 							{COPY.s03.notesEmpty}
 						</Marker>
 					</span>

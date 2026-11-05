@@ -41,7 +41,7 @@ export const glow = (g: number, at: number, color: string, hold = 0.35): React.C
 		return {};
 	}
 	const k = interpolate(g, [at, at + 4, at + 24], [0, 1, hold], clamp);
-	const a = Math.round(k * 255)
+	const a = Math.round(k * 230)
 		.toString(16)
 		.padStart(2, '0');
 	const soft = Math.round(k * 110)
@@ -98,17 +98,38 @@ export const Marker: React.FC<{
 
 // ------------------------------------------------------------------ camera
 
-export type CamKey = {at: number; fx: number; fy: number; s: number; dur?: number};
+/**
+ * A camera move frames a box: the box (a card, a headline) is always shown
+ * whole, with SAFE px of margin, so nothing the viewer should read is cut off.
+ * `maxS` caps the zoom so the move stays a push-in, not a crop.
+ */
+export type CamKey = {at: number; box: [number, number, number, number]; maxS?: number; dur?: number};
 
 const camEase = Easing.bezier(0.7, 0, 0.2, 1);
+const SAFE = 70;
+const BREATHE = 0.02; // slow push-in under the moves, included in the fit
 
-const resolveCamera = (g: number, keys: CamKey[]) => {
-	let {fx, fy, s} = keys[0];
+const fitBox = (k: CamKey, W: number, H: number) => {
+	const [x, y, w, h] = k.box;
+	const s = Math.max(1, Math.min(k.maxS ?? 1.3, (W - 2 * SAFE) / w, (H - 2 * SAFE) / h) / (1 + BREATHE));
+	// Centre on the box, but never show past the edge of the 1x canvas.
+	const halfW = W / (2 * s);
+	const halfH = H / (2 * s);
+	return {
+		fx: Math.min(W - halfW, Math.max(halfW, x + w / 2)),
+		fy: Math.min(H - halfH, Math.max(halfH, y + h / 2)),
+		s,
+	};
+};
+
+const resolveCamera = (g: number, keys: CamKey[], W: number, H: number) => {
+	let {fx, fy, s} = fitBox(keys[0], W, H);
 	for (const k of keys.slice(1)) {
 		const p = interpolate(g, [k.at, k.at + (k.dur ?? 16)], [0, 1], {...clamp, easing: camEase});
-		fx += (k.fx - fx) * p;
-		fy += (k.fy - fy) * p;
-		s += (k.s - s) * p;
+		const t = fitBox(k, W, H);
+		fx += (t.fx - fx) * p;
+		fy += (t.fy - fy) * p;
+		s += (t.s - s) * p;
 	}
 	return {fx, fy, s};
 };
@@ -126,7 +147,7 @@ const Backdrop: React.FC<{readonly id: SceneId; readonly g: number; readonly fps
 	const t = g / fps;
 	const mask = 'radial-gradient(ellipse 75% 70% at 50% 50%, black 25%, transparent 90%)';
 	return (
-		<AbsoluteFill style={{backgroundColor: colors.graphite}}>
+		<AbsoluteFill style={{backgroundColor: colors.canvas}}>
 			<AbsoluteFill
 				style={{
 					background: `radial-gradient(90% 80% at ${18 + Math.sin(t * 0.4) * 6}% ${8 + Math.cos(t * 0.3) * 6}%, ${pal.wash[0]} 0%, transparent 62%), radial-gradient(85% 75% at ${88 + Math.cos(t * 0.35) * 6}% ${96 + Math.sin(t * 0.45) * 5}%, ${pal.wash[1]} 0%, transparent 60%)`,
@@ -173,15 +194,14 @@ export const LightPool: React.FC<{
 			height: r * 2,
 			borderRadius: '50%',
 			background: `radial-gradient(circle, ${color} 0%, transparent 68%)`,
-			mixBlendMode: 'screen',
-			opacity: (strength ?? 0.32) * (0.85 + 0.15 * Math.sin((g / fps) * 2.2)) * (at === undefined ? 1 : interpolate(g, [at, at + 12], [0, 1], clamp)),
+			opacity: (strength ?? 0.32) * 0.6 * (0.85 + 0.15 * Math.sin((g / fps) * 2.2)) * (at === undefined ? 1 : interpolate(g, [at, at + 12], [0, 1], clamp)),
 			pointerEvents: 'none',
 		}}
 	/>
 );
 
 const Grain: React.FC<{readonly g: number}> = ({g}) => (
-	<AbsoluteFill style={{mixBlendMode: 'overlay', opacity: 0.12, pointerEvents: 'none'}}>
+	<AbsoluteFill style={{mixBlendMode: 'multiply', opacity: 0.07, pointerEvents: 'none'}}>
 		<svg width="100%" height="100%">
 			<filter id="grain">
 				<feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves={2} seed={Math.floor(g / 2) % 97} stitchTiles="stitch" />
@@ -193,7 +213,7 @@ const Grain: React.FC<{readonly g: number}> = ({g}) => (
 );
 
 const Vignette: React.FC = () => (
-	<AbsoluteFill style={{background: 'radial-gradient(ellipse 80% 75% at 50% 48%, transparent 55%, rgba(0,0,0,0.55) 100%)', pointerEvents: 'none'}} />
+	<AbsoluteFill style={{background: 'radial-gradient(ellipse 80% 75% at 50% 48%, transparent 60%, rgba(21,23,27,0.08) 100%)', pointerEvents: 'none'}} />
 );
 
 // ------------------------------------------------------------------ scene shell
@@ -213,8 +233,8 @@ export const SceneShell: React.FC<{
 }> = ({id, cam, children}) => {
 	const {g, from, to, fadeIn, isLast} = useScene(id);
 	const {width, height, fps} = useVideoConfig();
-	const c = resolveCamera(g, cam);
-	const breathe = 1 + interpolate(g, [from, to], [0, 0.03], clamp); // slow push-in under the moves
+	const c = resolveCamera(g, cam, width, height);
+	const breathe = 1 + interpolate(g, [from, to], [0, BREATHE], clamp); // slow push-in under the moves
 	// Whip pan: incoming scene flies in from the right, outgoing leaves to the left.
 	const inP = from === 0 || fadeIn ? 0 : interpolate(g, [from, from + WHIP_IN], [1, 0], {...clamp, easing: Easing.out(Easing.cubic)});
 	const outP = isLast ? 0 : interpolate(g, [to - WHIP_OUT, to], [0, 1], {...clamp, easing: Easing.in(Easing.cubic)});

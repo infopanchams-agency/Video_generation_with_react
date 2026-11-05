@@ -5,40 +5,47 @@ import {Easing} from 'remotion';
 
 // All colours live here so they can be changed in one place.
 // graphite, amber and signalCyan come from the PROJECT VALUES table.
+// v3 (Vikas): white background. Graphite is now the "ink" of the one dark
+// card per scene (the coaching card, captions), not the page.
 export const colors = {
 	graphite: '#0E0F11',
 	amber: '#F2A93B', // Winroom accent (provisional)
 	signalCyan: '#2FD3E0',
-	textPrimary: '#F2F2EE',
-	textMuted: '#8B8E94',
-	textDim: '#55575C', // questions that have already been asked
-	onAmber: '#16130D', // text on amber buttons and chips
-	// UI panels are slightly see-through so the coloured background reads through.
-	surface: 'rgba(28, 29, 34, 0.86)',
-	surfaceRaised: 'rgba(36, 37, 44, 0.9)',
-	surfaceSunken: 'rgba(15, 16, 20, 0.9)',
-	border: '#2C2E33',
-	tileFill: '#18191C',
-	tileBar: '#3A3C41',
-	gridDot: 'rgba(255, 255, 255, 0.07)',
-	gridLine: 'rgba(255, 255, 255, 0.035)',
-	shadow: 'rgba(0, 0, 0, 0.6)',
+	cyanInk: '#0FA5B4', // Signal Cyan, one step deeper so lines and labels read on white
+	coral: '#FF5D73', // the "problem" accent in S03
+	violet: '#7B5CFF', // background tint only
+	canvas: '#F7F6F2', // page background (warm white)
+	ink: '#15171B', // dark card background (coaching card, captions)
+	onInk: '#F4F4F1', // text on the dark card
+	textPrimary: '#15171B',
+	textMuted: '#6A6E76',
+	textDim: '#C3C5CA', // questions that have already been asked
+	onAmber: '#16130D', // text on amber buttons, chips and markers
+	surface: '#FFFFFF', // UI panels
+	surfaceRaised: '#FFFFFF',
+	surfaceSunken: '#F3F4F6',
+	border: '#E3E4E8',
+	tileFill: '#FFFFFF',
+	tileBar: '#D8DADF',
+	gridDot: 'rgba(21, 23, 27, 0.10)',
+	gridLine: 'rgba(21, 23, 27, 0.045)',
+	shadow: 'rgba(21, 23, 27, 0.16)',
 } as const;
 
-// Per-scene background: two colour washes over graphite, and the colour of
-// the light pool behind the scene's focal point. (Vikas approved gradients
-// and glow, overriding the brief's "no soft gradients, no glows" rule.)
-export const scenePalettes: Record<string, {wash: [string, string]; pool: string}> = {
-	S01Hook: {wash: ['#1B2A5C', '#0E3A4A'], pool: '#2FD3E0'},
-	S02Questions: {wash: ['#2A1A5E', '#14244F'], pool: '#7B5CFF'},
-	S03Fragmented: {wash: ['#3A1424', '#1A1F3A'], pool: '#FF5D73'},
-	S04Reveal: {wash: ['#3A2408', '#1A1206'], pool: '#F2A93B'},
-	S05LiveCall: {wash: ['#0B3B45', '#162A55'], pool: '#2FD3E0'},
-	S06PostCall: {wash: ['#0F2F55', '#0B3B3F'], pool: '#2FD3E0'},
-	S07OneInbox: {wash: ['#2A1A5E', '#0B3B45'], pool: '#7B5CFF'},
-	S08ChatSetup: {wash: ['#073B44', '#14244F'], pool: '#2FD3E0'},
-	S09Loop: {wash: ['#3A2408', '#0B3B45'], pool: '#F2A93B'},
-	S10EndCard: {wash: ['#4A2C06', '#1B1A3A'], pool: '#F2A93B'},
+// Per-scene background: two pastel washes over the warm white canvas.
+// (Vikas approved gradients and glow, overriding the brief's
+// "no soft gradients, no glows" rule.)
+export const scenePalettes: Record<string, {wash: [string, string]}> = {
+	S01Hook: {wash: ['#DCE6FF', '#D5F4F2']},
+	S02Questions: {wash: ['#E6DEFF', '#DCE6FF']},
+	S03Fragmented: {wash: ['#FFDDE2', '#E4E6F5']},
+	S04Reveal: {wash: ['#FFE6BE', '#FFF3DF']},
+	S05LiveCall: {wash: ['#D5F3F5', '#E0E6FF']},
+	S06PostCall: {wash: ['#DCE7FF', '#D5F4F0']},
+	S07OneInbox: {wash: ['#E6DEFF', '#D5F3F5']},
+	S08ChatSetup: {wash: ['#D3F2F4', '#DFE5FF']},
+	S09Loop: {wash: ['#FFE6BE', '#D5F3F5']},
+	S10EndCard: {wash: ['#FFE3B8', '#EAE6FF']},
 };
 
 export const fonts = {

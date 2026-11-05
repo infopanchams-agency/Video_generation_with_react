@@ -114,8 +114,8 @@ export const CoachingCard: React.FC<{
 	<div
 		style={{
 			position: 'absolute',
-			backgroundColor: colors.surfaceSunken,
-			border: `1.5px solid ${colors.border}`,
+			// The one dark card in the scene: the eye goes straight to it on white.
+			backgroundColor: colors.ink,
 			borderRadius: 18,
 			padding: hintSize * 0.8,
 			...lift,
@@ -130,12 +130,12 @@ export const CoachingCard: React.FC<{
 				fontFamily: fonts.ui,
 				fontSize: hintSize,
 				lineHeight: 1.18,
-				color: colors.textPrimary,
+				color: colors.onInk,
 				marginTop: hintSize * 0.55,
 			}}
 		>
 			{COPY.coaching.hintLead}
-			<Marker g={g} at={markAt}>
+			<Marker g={g} at={markAt} baseText={colors.onInk}>
 				{COPY.coaching.hintKey}
 			</Marker>
 		</div>

@@ -1,3 +1,4 @@
+import type {CamKey} from '../ui/fx';
 import {interpolate} from 'remotion';
 import {COPY} from '../script';
 import {clamp, colors, entryEase, fonts} from '../theme';
@@ -31,20 +32,14 @@ export const S08ChatSetup: React.FC = () => {
 	const press = interpolate(g, [sendAt, sendAt + 3, sendAt + 8], [1, 0.9, 1], clamp);
 
 	// Camera: the admin types and sends, then we cross to the graph as it builds.
-	const cam = [
-		{at: from, fx: 510, fy: 640, s: 1.3},
-		{at: sendAt, fx: 510, fy: 420, s: 1.3, dur: 12},
-		{at: nodesAt[0] - 8, fx: 1180, fy: 380, s: 1.25, dur: 14},
-		{at: nodesAt[2], fx: 1300, fy: 520, s: 1.18, dur: 14},
-		{at: nodesAt[3] + 20, fx: 960, fy: 540, s: 1.0, dur: 26},
-	];
+	const cam: CamKey[] = [{at: from, box: [140, 160, 1680, 760]}];
 	let keyIndex = 0;
 
 	return (
 		<SceneShell id="S08ChatSetup" cam={cam}>
 			<LightPool x={510} y={540} r={700} color={colors.signalCyan} g={g} fps={fps} strength={0.22} />
 			<LightPool x={1300} y={480} r={800} color={colors.signalCyan} g={g} fps={fps} at={nodesAt[0]} strength={0.3} />
-			<div style={{position: 'absolute', left: 0, top: 0, ...float(g, fps, 2, 4)}}>
+			<div style={{position: 'absolute', left: 0, top: 0, ...float(g, fps, 2, 4), opacity: interpolate(g, [nodesAt[0] - 6, nodesAt[0] + 4, nodesAt[3] + 20, nodesAt[3] + 34], [1, 0.4, 0.4, 1], clamp)}}>
 			<Panel style={{left: 140, top: 160, width: 740, height: 760, ...pop(g, from, fps, {tiltY: 16}), ...glow(g, sendAt, colors.amber, 0.2)}}>
 				<div style={{height: 66, borderBottom: `1.5px solid ${colors.border}`, display: 'flex', alignItems: 'center', padding: '0 36px'}}>
 					<Mono size={20}>{COPY.s08.breadcrumb}</Mono>
@@ -76,7 +71,7 @@ export const S08ChatSetup: React.FC = () => {
 						height: 72,
 						borderRadius: 12,
 						border: `1.5px solid ${colors.border}`,
-						backgroundColor: colors.surfaceSunken,
+						backgroundColor: colors.surface,
 						display: 'flex',
 						alignItems: 'center',
 						padding: '0 12px 0 24px',
@@ -116,10 +111,10 @@ export const S08ChatSetup: React.FC = () => {
 					const vertical = e.x1 === e.x2;
 					return (
 						<g key={e.to}>
-							<line x1={e.x1} y1={e.y1} x2={x} y2={y} stroke={colors.signalCyan} strokeWidth={3} style={{filter: `drop-shadow(0 0 6px ${colors.signalCyan})`}} />
+							<line x1={e.x1} y1={e.y1} x2={x} y2={y} stroke={colors.cyanInk} strokeWidth={3} style={{filter: `drop-shadow(0 0 6px ${colors.signalCyan})`}} />
 							<polygon
 								points={vertical ? '-7,-12 7,-12 0,0' : '-12,-7 -12,7 0,0'}
-								fill={colors.signalCyan}
+								fill={colors.cyanInk}
 								transform={`translate(${x} ${y})`}
 								opacity={p > 0.1 ? 1 : 0}
 							/>
@@ -142,10 +137,10 @@ export const S08ChatSetup: React.FC = () => {
 						width: NODE_W,
 						height: NODE_H,
 						boxSizing: 'border-box',
-						border: `2px solid ${colors.signalCyan}`,
+						border: `2px solid ${colors.cyanInk}`,
 						borderRadius: 10,
 						padding: '22px 26px',
-						backgroundColor: colors.surfaceSunken,
+						backgroundColor: colors.surface,
 						...pop(g, nodesAt[i], fps, {tiltX: 30, tiltY: i % 2 ? 20 : -20, rise: 40, from: 0.6}),
 						...glow(g, nodesAt[i], colors.signalCyan, 0.4),
 					}}

@@ -1,3 +1,4 @@
+import type {CamKey} from '../ui/fx';
 import {interpolate} from 'remotion';
 import {COPY} from '../script';
 import {clamp, colors, entryEase, fonts} from '../theme';
@@ -37,11 +38,15 @@ export const S10EndCard: React.FC = () => {
 		? {x: 80, top: 120, size: 112, rule: 640, ring: 170, word: 104, by: 44, markTop: 672, btn: {right: 80, top: 900, size: 36}}
 		: {x: 140, top: 160, size: 156, rule: 732, ring: 210, word: 140, by: 56, markTop: 770, btn: {right: 140, top: 830, size: 42}};
 	const W = square ? 1080 : 1920;
-	const cam = [
-		{at: from, fx: W / 2, fy: square ? 420 : 380, s: 1.18},
-		{at: byAt, fx: W / 2, fy: square ? 460 : 420, s: 1.1, dur: 14},
-		{at: logoAt - 6, fx: W / 2, fy: 540, s: 1.0, dur: 20},
-	];
+	const cam: CamKey[] = square
+		? [
+				{at: from, box: [80, 100, 920, 500]},
+				{at: logoAt - 6, box: [60, 60, 960, 960], dur: 20},
+			]
+		: [
+				{at: from, box: [140, 140, 1640, 400]},
+				{at: logoAt - 6, box: [140, 140, 1640, 870], dur: 20},
+			];
 	// The CTA button keeps a slow amber pulse once it is in.
 	const pulse = g >= ctaAt + 15 ? (Math.sin(((g - ctaAt) / fps) * Math.PI * 2) + 1) / 2 : 0;
 

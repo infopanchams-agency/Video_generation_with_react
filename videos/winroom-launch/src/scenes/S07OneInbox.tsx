@@ -1,3 +1,4 @@
+import type {CamKey} from '../ui/fx';
 import {interpolate, spring} from 'remotion';
 import {COPY} from '../script';
 import {clamp, colors, entryEase, fonts} from '../theme';
@@ -18,27 +19,21 @@ export const S07OneInbox: React.FC = () => {
 	const lineEnd = interpolate(g, [rowsAt[0], rowsAt[3] + 8], [0, 3 * ROW_STEP + 40], {...clamp, easing: entryEase});
 
 	// Camera: follow the rows down the timeline, then cross to the playbook stack.
-	const cam = [
-		{at: from, fx: 560, fy: 420, s: 1.3},
-		{at: rowsAt[1], fx: 560, fy: 480, s: 1.28, dur: 12},
-		{at: rowsAt[3], fx: 560, fy: 560, s: 1.25, dur: 12},
-		{at: stackAt - 8, fx: 1440, fy: 440, s: 1.28, dur: 16},
-		{at: stackAt + 40, fx: 960, fy: 540, s: 1.0, dur: 26},
-	];
+	const cam: CamKey[] = [{at: from, box: [140, 140, 1640, 800]}];
 
 	return (
 		<SceneShell id="S07OneInbox" cam={cam}>
-			<LightPool x={560} y={540} r={800} color="#7B5CFF" g={g} fps={fps} strength={0.3} />
+			<LightPool x={560} y={540} r={800} color={colors.violet} g={g} fps={fps} strength={0.3} />
 			<LightPool x={1440} y={420} r={600} color={colors.amber} g={g} fps={fps} at={stackAt} strength={0.3} />
 
 			{/* one contact timeline */}
-			<div style={{position: 'absolute', ...CARD, ...float(g, fps, 1, 5)}}>
+			<div style={{position: 'absolute', ...CARD, ...float(g, fps, 1, 5), opacity: interpolate(g, [stackAt - 4, stackAt + 6], [1, 0.4], clamp), filter: `blur(${interpolate(g, [stackAt - 4, stackAt + 6], [0, 2], clamp)}px)`}}>
 				<Panel style={{left: 0, top: 0, width: 840, height: 800, ...pop(g, from, fps, {tiltY: 16})}}>
 					<div style={{position: 'absolute', left: 49, top: 46, fontFamily: fonts.ui, fontWeight: 600, fontSize: 44, color: colors.textPrimary}}>{COPY.lead.name}</div>
 					<Mono size={19} style={{position: 'absolute', right: 48, top: 72}}>
 						{COPY.s07.timelineLabel}
 					</Mono>
-					<div style={{position: 'absolute', left: 58, top: ROW_Y + 9, width: 2, height: lineEnd, backgroundColor: colors.signalCyan, boxShadow: `0 0 12px ${colors.signalCyan}`}} />
+					<div style={{position: 'absolute', left: 58, top: ROW_Y + 9, width: 2, height: lineEnd, backgroundColor: colors.cyanInk}} />
 					{COPY.s07.rows.map((row, i) => {
 						const at = rowsAt[i];
 						const ping = interpolate(g, [at, at + 14], [0, 1], clamp);
@@ -52,7 +47,7 @@ export const S07OneInbox: React.FC = () => {
 										width: 20,
 										height: 20,
 										borderRadius: 10,
-										border: `2.5px solid ${colors.signalCyan}`,
+										border: `2.5px solid ${colors.cyanInk}`,
 										backgroundColor: g >= at ? colors.signalCyan : colors.surface,
 										boxSizing: 'border-box',
 										boxShadow: `0 0 0 ${ping * 16}px ${colors.signalCyan}${Math.round((1 - ping) * 140)
@@ -60,7 +55,7 @@ export const S07OneInbox: React.FC = () => {
 											.padStart(2, '0')}`,
 									}}
 								/>
-								<Mono size={19} color={colors.signalCyan} style={{position: 'absolute', left: 48, top: -2, letterSpacing: '0.04em'}}>
+								<Mono size={19} color={colors.cyanInk} style={{position: 'absolute', left: 48, top: -2, letterSpacing: '0.04em'}}>
 									{row.channel}
 								</Mono>
 								<div style={{position: 'absolute', left: 48, top: 26, whiteSpace: 'nowrap', fontFamily: fonts.ui, fontSize: 32, color: colors.textPrimary}}>{row.text}</div>
@@ -89,7 +84,7 @@ export const S07OneInbox: React.FC = () => {
 							alignItems: 'flex-end',
 							paddingBottom: 18,
 							backgroundColor: colors.surfaceRaised,
-							border: `1.5px solid ${colors.signalCyan}55`,
+							border: `1.5px solid ${colors.border}`,
 							borderRadius: 14,
 							translate: `${(1 - p) * 260}px ${400 + i * 68 + (1 - p) * 500}px`,
 							rotate: `${(1 - p) * (12 + i * 6)}deg`,

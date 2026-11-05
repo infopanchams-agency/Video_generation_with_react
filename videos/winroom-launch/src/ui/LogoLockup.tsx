@@ -147,7 +147,7 @@ export const LogoLockup: React.FC<{
 				) : null}
 			</div>
 			<div>
-				<div style={{fontFamily: wordmarkFont, fontWeight: 900, fontSize: wordSize, lineHeight: 1, color: colors.amber, letterSpacing: '0.005em', textShadow: `0 0 40px ${colors.amber}44`}}>
+				<div style={{fontFamily: wordmarkFont, fontWeight: 900, fontSize: wordSize, lineHeight: 1, color: colors.amber, letterSpacing: '0.005em', textShadow: `0 10px 30px ${colors.amber}55`}}>
 					{COPY.brand.product.split('').map((ch, i) => {
 						// "Winroom" writes up letter by letter, in time with the narrator saying it.
 						const at = writeAt + i * 3;
@@ -172,7 +172,7 @@ export const LogoLockup: React.FC<{
 						fontWeight: 300,
 						fontSize: bySize,
 						lineHeight: 1,
-						color: '#A8A396',
+						color: colors.textMuted,
 						marginTop: wordSize * 0.22,
 						opacity: interpolate(g, [byAt, byAt + 4], [0, 1], clamp),
 						translate: `${(1 - byP) * -30}px 0px`,
