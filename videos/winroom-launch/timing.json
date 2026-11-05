@@ -76,7 +76,7 @@
     {"key": "s10Cut", "frame": 1665, "what": "S10 cut (impact)",                    "sfx": "whoosh", "alignPeak": true},
     {"key": "s10Built", "frame": 1695, "what": "S10 'Built for sales people.'",       "sfx": null},
     {"key": "s10By", "frame": 1755, "what": "S10 'By sales people.'",              "sfx": null},
-    {"key": "s10Cta", "frame": 1815, "what": "S10 wordmark + CTA",                  "sfx": null}
+    {"key": "s10Cta", "frame": 1845, "what": "S10 Book a pilot CTA (after the logo sequence)",                  "sfx": null}
   ],
   "sfxFiles": {
     "whoosh": "audio/sfx/whoosh.wav",

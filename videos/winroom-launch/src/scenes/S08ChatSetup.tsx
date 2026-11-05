@@ -1,8 +1,9 @@
-import {AbsoluteFill, interpolate} from 'remotion';
+import {interpolate} from 'remotion';
 import {COPY} from '../script';
 import {clamp, colors, entryEase, fonts} from '../theme';
 import {useScene} from '../timing';
-import {enter, Mono, Panel, typed} from '../ui/kit';
+import {float, glow, LightPool, Marker, pop, SceneShell} from '../ui/fx';
+import {Mono, Panel, typed} from '../ui/kit';
 
 const NODE_HITS = ['s08Node1', 's08Node2', 's08Node3', 's08Node4'];
 const NODE_W = 360;
@@ -22,21 +23,48 @@ const EDGES = [
 ];
 
 export const S08ChatSetup: React.FC = () => {
-	const {g, hit, from} = useScene('S08ChatSetup');
+	const {g, hit, from, t} = useScene('S08ChatSetup');
+	const fps = t.fps;
 	const sendAt = hit('s08Send');
 	const nodesAt = NODE_HITS.map((k) => hit(k));
 	const sent = g >= sendAt;
 	const press = interpolate(g, [sendAt, sendAt + 3, sendAt + 8], [1, 0.9, 1], clamp);
 
+	// Camera: the admin types and sends, then we cross to the graph as it builds.
+	const cam = [
+		{at: from, fx: 510, fy: 640, s: 1.3},
+		{at: sendAt, fx: 510, fy: 420, s: 1.3, dur: 12},
+		{at: nodesAt[0] - 8, fx: 1180, fy: 380, s: 1.25, dur: 14},
+		{at: nodesAt[2], fx: 1300, fy: 520, s: 1.18, dur: 14},
+		{at: nodesAt[3] + 20, fx: 960, fy: 540, s: 1.0, dur: 26},
+	];
+	let keyIndex = 0;
+
 	return (
-		<AbsoluteFill style={{backgroundColor: colors.graphite}}>
-			<Panel style={{left: 140, top: 160, width: 740, height: 760}}>
+		<SceneShell id="S08ChatSetup" cam={cam}>
+			<LightPool x={510} y={540} r={700} color={colors.signalCyan} g={g} fps={fps} strength={0.22} />
+			<LightPool x={1300} y={480} r={800} color={colors.signalCyan} g={g} fps={fps} at={nodesAt[0]} strength={0.3} />
+			<div style={{position: 'absolute', left: 0, top: 0, ...float(g, fps, 2, 4)}}>
+			<Panel style={{left: 140, top: 160, width: 740, height: 760, ...pop(g, from, fps, {tiltY: 16}), ...glow(g, sendAt, colors.amber, 0.2)}}>
 				<div style={{height: 66, borderBottom: `1.5px solid ${colors.border}`, display: 'flex', alignItems: 'center', padding: '0 36px'}}>
 					<Mono size={20}>{COPY.s08.breadcrumb}</Mono>
 				</div>
-				<div style={{padding: '44px 40px', ...enter(g, sendAt, 10)}}>
+				<div style={{padding: '44px 40px', ...pop(g, sendAt, fps, {tiltX: 20, tiltY: 0, rise: 60, from: 0.9})}}>
 					<div style={{fontFamily: fonts.ui, fontWeight: 600, fontSize: 22, color: colors.textMuted}}>{COPY.s08.sender}</div>
-					<div style={{fontFamily: fonts.ui, fontSize: 38, lineHeight: 1.28, color: colors.textPrimary, marginTop: 14}}>{COPY.s08.message}</div>
+					<div style={{fontFamily: fonts.ui, fontSize: 38, lineHeight: 1.32, color: colors.textPrimary, marginTop: 14}}>
+						{COPY.s08.messageParts.map((part) => {
+							if (!part.key) {
+								return <span key={part.text}>{part.text}</span>;
+							}
+							// Key phrases get the marker one after another once the message lands.
+							const at = sendAt + 10 + keyIndex++ * 6;
+							return (
+								<Marker key={part.text} g={g} at={at}>
+									{part.text}
+								</Marker>
+							);
+						})}
+					</div>
 				</div>
 				{/* input: the admin's message types out, then sends on the hit */}
 				<div
@@ -76,6 +104,7 @@ export const S08ChatSetup: React.FC = () => {
 					</div>
 				</div>
 			</Panel>
+			</div>
 
 			{/* flow graph builds in Signal Cyan, one node per beat */}
 			<svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1} height={1}>
@@ -87,7 +116,7 @@ export const S08ChatSetup: React.FC = () => {
 					const vertical = e.x1 === e.x2;
 					return (
 						<g key={e.to}>
-							<line x1={e.x1} y1={e.y1} x2={x} y2={y} stroke={colors.signalCyan} strokeWidth={2.5} />
+							<line x1={e.x1} y1={e.y1} x2={x} y2={y} stroke={colors.signalCyan} strokeWidth={3} style={{filter: `drop-shadow(0 0 6px ${colors.signalCyan})`}} />
 							<polygon
 								points={vertical ? '-7,-12 7,-12 0,0' : '-12,-7 -12,7 0,0'}
 								fill={colors.signalCyan}
@@ -115,10 +144,10 @@ export const S08ChatSetup: React.FC = () => {
 						boxSizing: 'border-box',
 						border: `2px solid ${colors.signalCyan}`,
 						borderRadius: 10,
-						backgroundColor: colors.graphite,
 						padding: '22px 26px',
-						opacity: interpolate(g, [nodesAt[i], nodesAt[i] + 6], [0, 1], clamp),
-						scale: interpolate(g, [nodesAt[i], nodesAt[i] + 10], [0.9, 1], {...clamp, easing: entryEase}),
+						backgroundColor: colors.surfaceSunken,
+						...pop(g, nodesAt[i], fps, {tiltX: 30, tiltY: i % 2 ? 20 : -20, rise: 40, from: 0.6}),
+						...glow(g, nodesAt[i], colors.signalCyan, 0.4),
 					}}
 				>
 					<Mono size={18} style={{letterSpacing: '0.04em'}}>
@@ -129,6 +158,6 @@ export const S08ChatSetup: React.FC = () => {
 					</Mono>
 				</div>
 			))}
-		</AbsoluteFill>
+		</SceneShell>
 	);
 };

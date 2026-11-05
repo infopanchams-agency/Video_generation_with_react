@@ -57,6 +57,8 @@ export const COPY = {
 	coaching: {
 		label: 'Price objection',
 		hint: 'Anchor on the site visit. Offer Saturday 11 AM.',
+		hintLead: 'Anchor on the site visit. Offer ',
+		hintKey: 'Saturday 11 AM.', // highlighted
 	},
 	s06: {
 		repReply: "I'll email you the details before the visit.",
@@ -69,6 +71,9 @@ export const COPY = {
 		],
 		taskLabel: 'task.created',
 		taskTitle: 'Email visit details to Rohan M.',
+		taskTitleLead: 'Email ',
+		taskTitleKey: 'visit details', // highlighted
+		taskTitleTail: ' to Rohan M.',
 		taskMeta: 'before Sat 11 AM',
 	},
 	s07: {
@@ -85,6 +90,16 @@ export const COPY = {
 		breadcrumb: 'winroom / setup',
 		sender: 'Admin',
 		message: 'New inbound line for site-visit leads. Route to the Pune team. Missed calls go to WhatsApp.',
+		// Same message in parts; `key` parts get the highlighter marker.
+		messageParts: [
+			{text: 'New inbound line for ', key: false},
+			{text: 'site-visit leads', key: true},
+			{text: '. Route to the ', key: false},
+			{text: 'Pune team', key: true},
+			{text: '. Missed calls go to ', key: false},
+			{text: 'WhatsApp', key: true},
+			{text: '.', key: false},
+		],
 		placeholder: 'Describe a flow',
 		nodes: [
 			{label: 'INBOUND LINE', value: 'new_inbound_line'},

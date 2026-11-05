@@ -1,7 +1,8 @@
-import {AbsoluteFill, interpolate} from 'remotion';
+import {interpolate} from 'remotion';
 import {COPY} from '../script';
-import {clamp, colors, entryEase, fonts, WORD_IN_FRAMES} from '../theme';
+import {clamp, colors, fonts, WORD_IN_FRAMES} from '../theme';
 import {useScene} from '../timing';
+import {float, LightPool, Marker, pop, SceneShell} from '../ui/fx';
 import {enter} from '../ui/kit';
 
 // Deterministic 0..1 value per tile, so the grid is identical on every render.
@@ -10,8 +11,11 @@ const rand = (i: number) => {
 	return x - Math.floor(x);
 };
 
+const ACCENTS = [colors.amber, colors.signalCyan];
+
 export const S01Hook: React.FC = () => {
-	const {g, hit, words, square} = useScene('S01Hook');
+	const {g, hit, words, square, t, from} = useScene('S01Hook');
+	const fps = t.fps;
 	const tilesAt = hit('s01Tiles');
 	const vo = words('vo01');
 
@@ -26,6 +30,20 @@ export const S01Hook: React.FC = () => {
 	const wordAt = square
 		? [settled, settled, settled]
 		: [hit('s01Word'), vo[0]?.to ?? hit('s01Word'), vo[1]?.from ?? hit('s01Word')];
+	const markAt = square ? hit('s01Word') + 12 : wordAt[2] + 8;
+
+	const W = square ? 1080 : 1920;
+	const H = square ? 1080 : 1080;
+	const cam = square
+		? [
+				{at: from, fx: 540, fy: 540, s: 1},
+				{at: tilesAt, fx: 540, fy: 600, s: 1.06, dur: 40},
+			]
+		: [
+				{at: from, fx: 960, fy: 560, s: 1.08},
+				{at: tilesAt, fx: 900, fy: 600, s: 1.0, dur: 30},
+				{at: markAt, fx: 700, fy: 700, s: 1.12, dur: 22},
+			];
 
 	const tiles = [];
 	for (let r = 0; r < grid.rows; r++) {
@@ -37,44 +55,45 @@ export const S01Hook: React.FC = () => {
 			}
 			// A few tiles are there from the start; the rest multiply on bar 2.
 			const at = seed > 0.86 ? settled : tilesAt + Math.floor(rand(i + 99) * 24);
+			const accent = rand(i + 31) > 0.72 ? ACCENTS[i % 2] : null;
 			tiles.push(
-				<div
-					key={i}
-					style={{
-						position: 'absolute',
-						left: grid.x + c * grid.px,
-						top: grid.y + r * grid.py,
-						width: grid.w,
-						height: grid.h,
-						borderRadius: 8,
-						backgroundColor: colors.tileFill,
-						border: `1.5px solid ${colors.border}`,
-						opacity: interpolate(g, [at, at + 8], [0, 0.55 + 0.45 * rand(i + 7)], {...clamp, easing: entryEase}),
-						scale: interpolate(g, [at, at + 8], [0.85, 1], {...clamp, easing: entryEase}),
-					}}
-				>
-					{[0.38, 0.56, 0.42].map((w, k) => (
-						<div
-							key={k}
-							style={{
-								position: 'absolute',
-								left: 14,
-								top: 14 + k * 14,
-								width: grid.w * w,
-								height: k === 0 ? 6 : 4,
-								borderRadius: 3,
-								backgroundColor: colors.tileBar,
-								opacity: k === 0 ? 1 : 0.6,
-							}}
-						/>
-					))}
+				<div key={i} style={{position: 'absolute', left: grid.x + c * grid.px, top: grid.y + r * grid.py, ...float(g, fps, i, 5)}}>
+					<div
+						style={{
+							width: grid.w,
+							height: grid.h,
+							borderRadius: 10,
+							backgroundColor: colors.tileFill,
+							border: `1.5px solid ${accent ? `${accent}66` : colors.border}`,
+							boxShadow: accent ? `0 0 28px ${accent}33` : undefined,
+							...pop(g, at, fps, {tiltX: 25, tiltY: (c % 2 ? 1 : -1) * 18, rise: 30, from: 0.5}),
+						}}
+					>
+						{[0.38, 0.56, 0.42].map((w, k) => (
+							<div
+								key={k}
+								style={{
+									position: 'absolute',
+									left: 14,
+									top: 14 + k * 14,
+									width: grid.w * w,
+									height: k === 0 ? 6 : 4,
+									borderRadius: 3,
+									backgroundColor: k === 0 && accent ? accent : colors.tileBar,
+									opacity: k === 0 ? 1 : 0.6,
+								}}
+							/>
+						))}
+					</div>
 				</div>,
 			);
 		}
 	}
 
 	return (
-		<AbsoluteFill style={{backgroundColor: colors.graphite}}>
+		<SceneShell id="S01Hook" cam={cam}>
+			<LightPool x={W * 0.3} y={H * 0.72} r={700} color={colors.signalCyan} g={g} fps={fps} strength={0.22} />
+			<LightPool x={W * 0.75} y={H * 0.2} r={600} color="#7B5CFF" g={g} fps={fps} at={tilesAt} strength={0.25} />
 			{tiles}
 			<div
 				style={{
@@ -90,13 +109,23 @@ export const S01Hook: React.FC = () => {
 				}}
 			>
 				<div>
-					<span style={{display: 'inline-block', ...enter(g, wordAt[0])}}>{COPY.s01.headline[0]}</span>{' '}
-					<span style={{display: 'inline-block', ...enter(g, wordAt[1])}}>{COPY.s01.headline[1]}</span>
+					<span style={{display: 'inline-block', ...enter(g, wordAt[0], WORD_IN_FRAMES, 40)}}>{COPY.s01.headline[0]}</span>{' '}
+					<span style={{display: 'inline-block', ...enter(g, wordAt[1], WORD_IN_FRAMES, 40)}}>{COPY.s01.headline[1]}</span>
 				</div>
-				<div>
-					<span style={{display: 'inline-block', ...enter(g, wordAt[2])}}>{COPY.s01.headline[2]}</span>
+				<div style={{marginTop: 10}}>
+					<span
+						style={{
+							display: 'inline-block',
+							...enter(g, wordAt[2], WORD_IN_FRAMES, 40),
+							scale: interpolate(g, [markAt, markAt + 5, markAt + 12], [1, 1.06, 1], clamp),
+						}}
+					>
+						<Marker g={g} at={markAt}>
+							{COPY.s01.headline[2]}
+						</Marker>
+					</span>
 				</div>
 			</div>
-		</AbsoluteFill>
+		</SceneShell>
 	);
 };

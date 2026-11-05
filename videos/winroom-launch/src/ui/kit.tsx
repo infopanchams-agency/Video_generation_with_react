@@ -2,6 +2,7 @@ import type React from 'react';
 import {interpolate} from 'remotion';
 import {COPY} from '../script';
 import {clamp, colors, entryEase, fonts, WORD_IN_FRAMES, WORD_RISE_PX} from '../theme';
+import {lift, Marker} from './fx';
 
 /** Entry: fade in and slide up, starting exactly on `at`. */
 export const enter = (g: number, at: number, frames = WORD_IN_FRAMES, rise = WORD_RISE_PX): React.CSSProperties => ({
@@ -31,6 +32,7 @@ export const Panel: React.FC<{
 			border: `1.5px solid ${colors.border}`,
 			borderRadius: 18,
 			overflow: 'hidden',
+			...lift,
 			...style,
 		}}
 	>
@@ -106,7 +108,9 @@ export const CoachingCard: React.FC<{
 	readonly style?: React.CSSProperties;
 	readonly labelSize: number;
 	readonly hintSize: number;
-}> = ({style, labelSize, hintSize}) => (
+	readonly g: number;
+	readonly markAt: number;
+}> = ({style, labelSize, hintSize, g, markAt}) => (
 	<div
 		style={{
 			position: 'absolute',
@@ -114,6 +118,7 @@ export const CoachingCard: React.FC<{
 			border: `1.5px solid ${colors.border}`,
 			borderRadius: 18,
 			padding: hintSize * 0.8,
+			...lift,
 			...style,
 		}}
 	>
@@ -129,7 +134,10 @@ export const CoachingCard: React.FC<{
 				marginTop: hintSize * 0.55,
 			}}
 		>
-			{COPY.coaching.hint}
+			{COPY.coaching.hintLead}
+			<Marker g={g} at={markAt}>
+				{COPY.coaching.hintKey}
+			</Marker>
 		</div>
 	</div>
 );

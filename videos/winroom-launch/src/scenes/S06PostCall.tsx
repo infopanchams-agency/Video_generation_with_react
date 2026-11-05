@@ -1,10 +1,12 @@
 import type React from 'react';
-import {AbsoluteFill, interpolate} from 'remotion';
+import {interpolate} from 'remotion';
 import {COPY} from '../script';
 import {clamp, colors, entryEase, fonts} from '../theme';
 import {useScene} from '../timing';
 import {LiveCall} from '../ui/LiveCall';
-import {Chip, Cursor, enter, Mono, Panel, slideIn, typed} from '../ui/kit';
+import type {CamKey} from '../ui/fx';
+import {glow, LightPool, Marker, pop, SceneShell} from '../ui/fx';
+import {Chip, Cursor, Mono, Panel, typed} from '../ui/kit';
 
 const TYPE_FRAMES = 10; // a CRM field types out over 10 frames from its hit
 
@@ -49,15 +51,34 @@ const Tick: React.FC<{readonly size: number; readonly g: number; readonly at: nu
 );
 
 export const S06PostCall: React.FC = () => {
-	const {g, hit, words, square, t} = useScene('S06PostCall');
+	const {g, hit, words, square, t, from} = useScene('S06PostCall');
+	const fps = t.fps;
 	const endsAt = hit('s06CallEnds');
 	const crm = [hit('s06Crm1'), hit('s06Crm2')];
 	const taskAt = hit('s06Task');
 
+	// Camera: rep's reply -> call card -> CRM fields -> task -> whole board.
+	const cam: CamKey[] = square
+		? [
+				{at: from, fx: 540, fy: 200, s: 1.3},
+				{at: crm[0] - 6, fx: 540, fy: 480, s: 1.15, dur: 14},
+				{at: taskAt - 6, fx: 540, fy: 760, s: 1.2, dur: 14},
+				{at: taskAt + 30, fx: 540, fy: 480, s: 1.0, dur: 24},
+			]
+		: [
+				{at: from, fx: 760, fy: 470, s: 1.32},
+				{at: endsAt, fx: 370, fy: 450, s: 1.4, dur: 1},
+				{at: endsAt + 2, fx: 370, fy: 450, s: 1.3, dur: 10},
+				{at: crm[0] - 6, fx: 1270, fy: 400, s: 1.22, dur: 14},
+				{at: taskAt - 6, fx: 1270, fy: 740, s: 1.25, dur: 14},
+				{at: taskAt + 30, fx: 960, fy: 560, s: 1.0, dur: 26},
+			];
+
 	// Before the call ends the rep's reply types into the live transcript.
 	if (g < endsAt) {
 		return (
-			<AbsoluteFill style={{backgroundColor: colors.graphite}}>
+			<SceneShell id="S06PostCall" cam={cam}>
+				<LightPool x={760} y={500} r={900} color={colors.signalCyan} g={g} fps={fps} strength={0.24} />
 				<LiveCall
 					g={g}
 					fps={t.fps}
@@ -68,7 +89,7 @@ export const S06PostCall: React.FC = () => {
 					customerWords={words('vo05a')}
 					repWords={words('vo06a')}
 				/>
-			</AbsoluteFill>
+			</SceneShell>
 		);
 	}
 
@@ -93,8 +114,10 @@ export const S06PostCall: React.FC = () => {
 	const taskCheck = interpolate(g, [taskAt + 4, taskAt + 10], [0, 1], clamp);
 
 	return (
-		<AbsoluteFill style={{backgroundColor: colors.graphite}}>
-			<Panel style={{...L.call, padding: '44px 36px', boxSizing: 'border-box'}}>
+		<SceneShell id="S06PostCall" cam={cam}>
+			<LightPool x={L.call.left + L.call.width / 2} y={L.call.top + 150} r={500} color={colors.amber} g={g} fps={fps} at={endsAt} strength={0.3} />
+			<LightPool x={L.crm.left + L.crm.width / 2} y={L.crm.top + 180} r={800} color={colors.signalCyan} g={g} fps={fps} at={crm[0]} strength={0.24} />
+			<Panel style={{...L.call, padding: '44px 36px', boxSizing: 'border-box', ...pop(g, endsAt, fps, {tiltY: 14}), ...glow(g, endsAt, colors.amber)}}>
 				<Mono size={19}>{COPY.s06.callEnded}</Mono>
 				<div style={{fontFamily: fonts.ui, fontWeight: 600, fontSize: 46, color: colors.textPrimary, marginTop: 18}}>{COPY.lead.name}</div>
 				<div
@@ -104,6 +127,8 @@ export const S06PostCall: React.FC = () => {
 						opacity: interpolate(g, [endsAt, endsAt + 6], [0, 1], clamp),
 						scale: interpolate(g, [endsAt, endsAt + 10], [0.8, 1], {...clamp, easing: entryEase}),
 						transformOrigin: 'left center',
+						boxShadow: `0 0 ${interpolate(g, [endsAt, endsAt + 4, endsAt + 30], [0, 50, 18], clamp)}px ${colors.amber}`,
+						borderRadius: 10,
 					}}
 				>
 					<Chip size={32} filled>
@@ -114,7 +139,7 @@ export const S06PostCall: React.FC = () => {
 
 			<Connector g={g} at={crm[0] - 10} x1={L.a1[0]} y1={L.a1[1]} x2={L.a1[2]} y2={L.a1[3]} />
 
-			<Panel style={{...L.crm, boxSizing: 'border-box', ...enter(g, endsAt, 10)}}>
+			<Panel style={{...L.crm, boxSizing: 'border-box', ...pop(g, endsAt + 4, fps, {tiltY: -14}), ...glow(g, crm[0], colors.signalCyan, 0.25)}}>
 				<div style={{height: 66, borderBottom: `1.5px solid ${colors.border}`, display: 'flex', alignItems: 'center', padding: '0 36px'}}>
 					<Mono size={19}>{COPY.s06.crmBreadcrumb}</Mono>
 				</div>
@@ -123,7 +148,17 @@ export const S06PostCall: React.FC = () => {
 						const at = crm[i];
 						const typing = g >= at && g < at + TYPE_FRAMES + t.framesPerBeat;
 						return (
-							<div key={f.key} style={{display: 'flex', alignItems: 'center', fontFamily: fonts.mono, fontSize: L.field, opacity: g >= at ? 1 : 0}}>
+							<div
+								key={f.key}
+								style={{
+									display: 'flex',
+									alignItems: 'center',
+									fontFamily: fonts.mono,
+									fontSize: L.field,
+									opacity: g >= at ? 1 : 0,
+									translate: `${interpolate(g, [at, at + 8], [-30, 0], {...clamp, easing: entryEase})}px 0px`,
+								}}
+							>
 								<span style={{color: colors.textMuted}}>{f.key}</span>
 								<span style={{color: colors.textPrimary, marginLeft: L.field * 0.6}}>{typed(f.value, g, at, TYPE_FRAMES)}</span>
 								{typing ? <Cursor g={g} from={at + 999} framesPerBeat={t.framesPerBeat} height={L.field * 1.1} /> : null}
@@ -136,7 +171,18 @@ export const S06PostCall: React.FC = () => {
 
 			<Connector g={g} at={taskAt - 10} x1={L.a2[0]} y1={L.a2[1]} x2={L.a2[2]} y2={L.a2[3]} />
 
-			<Panel style={{...L.task, boxSizing: 'border-box', display: 'flex', alignItems: 'center', padding: '0 36px', gap: 30, ...slideIn(g, taskAt, 60)}}>
+			<Panel
+				style={{
+					...L.task,
+					boxSizing: 'border-box',
+					display: 'flex',
+					alignItems: 'center',
+					padding: '0 36px',
+					gap: 30,
+					...pop(g, taskAt, fps, {tiltX: 20, tiltY: 0}),
+					...glow(g, taskAt + 6, colors.signalCyan),
+				}}
+			>
 				<div
 					style={{
 						width: 44,
@@ -165,10 +211,16 @@ export const S06PostCall: React.FC = () => {
 				</div>
 				<div>
 					<Mono size={17}>{COPY.s06.taskLabel}</Mono>
-					<div style={{fontFamily: fonts.ui, fontWeight: 600, fontSize: square ? 36 : 40, color: colors.textPrimary, marginTop: 6}}>{COPY.s06.taskTitle}</div>
+					<div style={{fontFamily: fonts.ui, fontWeight: 600, fontSize: square ? 36 : 40, color: colors.textPrimary, marginTop: 6}}>
+						{COPY.s06.taskTitleLead}
+						<Marker g={g} at={taskAt + 12}>
+							{COPY.s06.taskTitleKey}
+						</Marker>
+						{COPY.s06.taskTitleTail}
+					</div>
 					<div style={{fontFamily: fonts.ui, fontSize: 27, color: colors.textMuted, marginTop: 6}}>{COPY.s06.taskMeta}</div>
 				</div>
 			</Panel>
-		</AbsoluteFill>
+		</SceneShell>
 	);
 };

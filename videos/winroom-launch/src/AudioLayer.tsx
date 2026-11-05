@@ -18,6 +18,7 @@ const SFX_VOLUME: Record<string, number> = {
 	switch: 0.25,
 };
 const SFX_DEFAULT = 0.35;
+const WHIP_VOLUME = 0.16; // whip-pan cuts: present but under the VO
 
 export const AudioLayer: React.FC<{readonly layout: Layout}> = ({layout}) => {
 	const t = TIMINGS[layout];
@@ -75,6 +76,22 @@ export const AudioLayer: React.FC<{readonly layout: Layout}> = ({layout}) => {
 							from={h.frame - meta.peakOffsetFrames}
 							durationInFrames={meta.durationFrames}
 							volume={SFX_VOLUME[h.sfx as string] ?? SFX_DEFAULT}
+						/>
+					);
+				})}
+			{/* Soft whoosh on each whip-pan cut (cuts that have no impact hit of their own). */}
+			{t.scenes
+				.filter((s) => s.from > 0 && !t.hits.some((h) => h.sfx && h.frame === s.from))
+				.map((s) => {
+					const meta = SFX_META.whoosh;
+					return (
+						<Audio
+							key={`whip-${s.id}`}
+							name={`SFX whip @ ${s.id}`}
+							src={staticFile(meta.file)}
+							from={s.from - meta.peakOffsetFrames}
+							durationInFrames={meta.durationFrames}
+							volume={WHIP_VOLUME}
 						/>
 					);
 				})}

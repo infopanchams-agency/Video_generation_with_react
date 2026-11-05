@@ -3,7 +3,8 @@ import {interpolate} from 'remotion';
 import {COPY} from '../script';
 import {clamp, colors, entryEase, fonts} from '../theme';
 import type {TimedWord} from '../timing';
-import {Chip, CoachingCard, Mono, PhoneIcon, slideIn} from './kit';
+import {glow, Marker, pop} from './fx';
+import {Chip, CoachingCard, Mono, PhoneIcon} from './kit';
 
 /** Words that type into the transcript as they are spoken. */
 const SpokenLine: React.FC<{
@@ -11,13 +12,29 @@ const SpokenLine: React.FC<{
 	readonly words: TimedWord[];
 	readonly g: number;
 	readonly style: React.CSSProperties;
-}> = ({text, words, g, style}) => (
+	readonly keyIndex: number | null; // word that gets the highlighter marker
+	readonly keyColor: string;
+}> = ({text, words, g, style, keyIndex, keyColor}) => (
 	<div style={style}>
 		{text.split(' ').map((w, i) => {
 			const at = words[i]?.from ?? null; // a word with no timing never shows
 			return (
-				<span key={i} style={{opacity: at === null ? 0 : interpolate(g, [at, at + 4], [0, 1], clamp)}}>
-					{w}{' '}
+				<span
+					key={i}
+					style={{
+						display: 'inline-block',
+						marginRight: '0.25em',
+						opacity: at === null ? 0 : interpolate(g, [at, at + 4], [0, 1], clamp),
+						translate: at === null ? undefined : `0px ${interpolate(g, [at, at + 6], [14, 0], {...clamp, easing: entryEase})}px`,
+					}}
+				>
+					{i === keyIndex && at !== null ? (
+						<Marker g={g} at={at + 3} color={keyColor} baseText={style.color as string}>
+							{w}
+						</Marker>
+					) : (
+						w
+					)}
 				</span>
 			);
 		})}
@@ -66,7 +83,9 @@ export const LiveCall: React.FC<{
 
 	const connected = g >= connectAt;
 	const secs = Math.max(0, Math.floor((g - connectAt) / fps)) + 1; // dummy call timer
-	const press = interpolate(g, [dialAt, dialAt + 3, dialAt + 8], [1, 0.94, 1], clamp);
+	const press = interpolate(g, [dialAt, dialAt + 3, dialAt + 8], [1, 0.9, 1], clamp);
+	// Ringing pulse on the call button while the call is live.
+	const ring = connected ? ((g - connectAt) % fps) / fps : 0;
 
 	return (
 		<div style={{position: 'absolute', ...L.panel, backgroundColor: colors.surface, border: `1.5px solid ${colors.border}`, borderRadius: 20, overflow: 'hidden'}}>
@@ -74,7 +93,18 @@ export const LiveCall: React.FC<{
 			<div style={{height: L.bar, borderBottom: `1.5px solid ${colors.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 32px'}}>
 				<Mono size={L.mono}>{COPY.lead.breadcrumb}</Mono>
 				<Mono size={L.mono} color={colors.textPrimary} style={{opacity: connected ? 1 : 0, display: 'flex', alignItems: 'center', gap: 10}}>
-					<span style={{width: 12, height: 12, borderRadius: 6, backgroundColor: colors.amber, display: 'inline-block'}} />
+					<span
+						style={{
+							width: 12,
+							height: 12,
+							borderRadius: 6,
+							backgroundColor: colors.amber,
+							display: 'inline-block',
+							boxShadow: `0 0 0 ${6 * ring}px ${colors.amber}${Math.round((1 - ring) * 120)
+								.toString(16)
+								.padStart(2, '0')}`,
+						}}
+					/>
 					{`${COPY.s05.live} · 00:00:${pad2(secs)}`}
 				</Mono>
 			</div>
@@ -100,6 +130,11 @@ export const LiveCall: React.FC<{
 					justifyContent: 'center',
 					gap: 16,
 					scale: press,
+					boxShadow: connected
+						? `0 0 0 ${14 * ring}px ${colors.amber}${Math.round((1 - ring) * 90)
+								.toString(16)
+								.padStart(2, '0')}, 0 12px 40px -6px ${colors.amber}88`
+						: `0 12px 40px -6px ${colors.amber}55`,
 				}}
 			>
 				<PhoneIcon size={L.body * 1.05} color={colors.onAmber} />
@@ -139,6 +174,8 @@ export const LiveCall: React.FC<{
 						text={COPY.s05.customerLine}
 						words={customerWords}
 						g={g}
+						keyIndex={3}
+						keyColor={colors.signalCyan}
 						style={{
 							position: 'absolute',
 							left: L.colB,
@@ -155,6 +192,8 @@ export const LiveCall: React.FC<{
 							text={COPY.s06.repReply}
 							words={repWords}
 							g={g}
+							keyIndex={2}
+							keyColor={colors.amber}
 							style={{
 								position: 'absolute',
 								left: 0,
@@ -174,13 +213,15 @@ export const LiveCall: React.FC<{
 			<CoachingCard
 				labelSize={L.card.labelSize}
 				hintSize={L.card.hintSize}
+				g={g}
+				markAt={cardAt + 14}
 				style={{
 					left: L.card.left,
 					top: L.card.top,
 					width: L.card.width,
 					boxSizing: 'border-box',
-					...slideIn(g, cardAt, 80),
-					scale: interpolate(g, [cardAt, cardAt + 12], [0.97, 1], {...clamp, easing: entryEase}),
+					...pop(g, cardAt, fps, {tiltX: 8, tiltY: -24, rise: 50}),
+					...glow(g, cardAt, colors.amber),
 				}}
 			/>
 		</div>
